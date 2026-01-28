@@ -2,6 +2,7 @@ import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MapPin } from 'lucide-react';
+import { AnimatedBirds } from '../components/AnimatedBirds';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,45 +31,7 @@ export function HeroSection() {
       ref={sectionRef}
       className="min-h-screen bg-auxerta-offwhite flex flex-col items-center justify-center pt-24 pb-16 px-[8vw] relative overflow-hidden"
     >
-      {/* Animated Gradient Orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Purple Orb */}
-        <div
-          className="absolute w-[600px] h-[600px] rounded-full opacity-40 blur-[100px] animate-orb-1"
-          style={{
-            background: 'radial-gradient(circle, #9B7BC7 0%, #7B5BA7 50%, transparent 70%)',
-            top: '-10%',
-            left: '-10%',
-          }}
-        />
-        {/* Blue Orb */}
-        <div
-          className="absolute w-[500px] h-[500px] rounded-full opacity-35 blur-[100px] animate-orb-2"
-          style={{
-            background: 'radial-gradient(circle, #4F7CFF 0%, #3B5FCC 50%, transparent 70%)',
-            top: '20%',
-            right: '-5%',
-          }}
-        />
-        {/* Light Blue Orb */}
-        <div
-          className="absolute w-[550px] h-[550px] rounded-full opacity-30 blur-[100px] animate-orb-3"
-          style={{
-            background: 'radial-gradient(circle, #7DD3FC 0%, #5BB8E0 50%, transparent 70%)',
-            bottom: '10%',
-            left: '10%',
-          }}
-        />
-        {/* Mint / Light Green Orb */}
-        <div
-          className="absolute w-[450px] h-[450px] rounded-full opacity-35 blur-[100px] animate-orb-4"
-          style={{
-            background: 'radial-gradient(circle, #86EFAC 0%, #4ADE80 50%, transparent 70%)',
-            bottom: '-5%',
-            right: '15%',
-          }}
-        />
-      </div>
+
 
       <div
         ref={contentRef}
@@ -88,28 +51,54 @@ export function HeroSection() {
           <span className="gradient-text">excel</span>
         </h1>
 
-        {/* Contact CTA - Capsule Style */}
-        <div className="flex flex-wrap justify-center items-center gap-2 mb-8">
-          <span className="body-text text-auxerta-muted">If you need our eval and training service contact us at</span>
+        {/* Contact CTA - Premium Style */}
+        <div className="flex flex-wrap justify-center items-center gap-3 mb-10">
+          <span
+            className="text-base text-auxerta-text/70 font-light"
+            style={{ letterSpacing: '0.02em' }}
+          >
+            If you need our eval and training service contact us at
+          </span>
           <a
             href="mailto:service@auxerta.com"
-            className="inline-flex items-center px-5 py-2 rounded-full bg-amber-50 hover:bg-amber-100 text-purple-700 font-medium shadow-md hover:shadow-lg border border-amber-200 transition-all"
+            className="inline-flex items-center px-6 py-2.5 rounded-full font-medium transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-0.5"
+            style={{
+              background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(139, 92, 246, 0.08) 100%)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(167, 139, 250, 0.3)',
+              boxShadow: '0 4px 20px rgba(139, 92, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+              color: '#7c3aed',
+              letterSpacing: '0.01em',
+            }}
           >
             service@auxerta.com
           </a>
         </div>
 
-        {/* Service Categories */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          <div className="px-6 py-3 rounded-full bg-white border border-purple-200 shadow-sm hover:shadow-md hover:border-purple-300 transition-all">
-            <span className="text-sm font-medium text-auxerta-text">Computer Vision</span>
-          </div>
-          <div className="px-6 py-3 rounded-full bg-white border border-purple-200 shadow-sm hover:shadow-md hover:border-purple-300 transition-all">
-            <span className="text-sm font-medium text-auxerta-text">Natural Language</span>
-          </div>
-          <div className="px-6 py-3 rounded-full bg-white border border-purple-200 shadow-sm hover:shadow-md hover:border-purple-300 transition-all">
-            <span className="text-sm font-medium text-auxerta-text">Custom Workflow</span>
-          </div>
+        {/* Service Categories - Premium Pills */}
+        <div className="flex flex-wrap justify-center gap-4 mb-14">
+          {['Computer Vision', 'Natural Language', 'Custom Workflow'].map((service) => (
+            <div
+              key={service}
+              className="group px-7 py-3.5 rounded-full cursor-default transition-all duration-300 ease-out hover:scale-[1.03] hover:-translate-y-0.5"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 245, 255, 0.8) 100%)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(167, 139, 250, 0.2)',
+                boxShadow: '0 4px 24px rgba(139, 92, 246, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+              }}
+            >
+              <span
+                className="text-sm font-medium bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: 'linear-gradient(135deg, #1f1f23 0%, #4c1d95 100%)',
+                  letterSpacing: '0.03em',
+                }}
+              >
+                {service}
+              </span>
+            </div>
+          ))}
         </div>
 
         {/* Chat Interface */}
@@ -122,7 +111,10 @@ export function HeroSection() {
                 <div className="w-3 h-3 rounded-full bg-yellow-300" />
                 <div className="w-3 h-3 rounded-full bg-green-300" />
               </div>
-              <span className="micro-text text-auxerta-muted">AUXERTA: NEOGNATHAE</span>
+              <div className="relative">
+                <AnimatedBirds />
+                <span className="micro-text text-auxerta-muted">AUXERTA: NEOGNATHAE</span>
+              </div>
               <div className="w-16" />
             </div>
 
