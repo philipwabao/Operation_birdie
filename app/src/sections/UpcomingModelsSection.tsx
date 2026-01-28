@@ -70,11 +70,11 @@ export function UpcomingModelsSection() {
         </h2>
 
         {/* Models Grid - 2 columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {models.map((model) => (
             <div
               key={model.id}
-              className="group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 aspect-[16/10]"
+              className="group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 aspect-[21/9]"
             >
               {/* Background Image */}
               <img
