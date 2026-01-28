@@ -39,7 +39,7 @@ export function HeroSection() {
       >
         {/* Location Badge */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100/50">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-purple-100/50">
             <MapPin className="w-4 h-4 text-purple-600" />
             <span className="micro-text text-purple-700">US · Japan</span>
           </div>
@@ -61,7 +61,7 @@ export function HeroSection() {
           </span>
           <a
             href="mailto:service@auxerta.com"
-            className="inline-flex items-center px-6 py-2.5 rounded-full font-medium transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-0.5"
+            className="inline-flex items-center px-6 py-2.5 rounded-md font-medium transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-0.5"
             style={{
               background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(139, 92, 246, 0.08) 100%)',
               backdropFilter: 'blur(8px)',
@@ -80,7 +80,7 @@ export function HeroSection() {
           {['Computer Vision', 'Natural Language', 'Custom Workflow'].map((service) => (
             <div
               key={service}
-              className="group px-7 py-3.5 rounded-full cursor-default transition-all duration-300 ease-out hover:scale-[1.03] hover:-translate-y-0.5"
+              className="group px-7 py-3.5 rounded-md cursor-default transition-all duration-300 ease-out hover:scale-[1.03] hover:-translate-y-0.5"
               style={{
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 245, 255, 0.8) 100%)',
                 backdropFilter: 'blur(12px)',
@@ -103,7 +103,7 @@ export function HeroSection() {
 
         {/* Chat Interface */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-[24px] border border-purple-100 overflow-hidden shadow-card">
+          <div className="bg-white rounded-lg border border-purple-100 overflow-hidden shadow-card">
             {/* Header */}
             <div className="px-6 py-4 border-b border-purple-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -128,18 +128,18 @@ export function HeroSection() {
             {/* Input Area */}
             <div className="px-6 py-4 border-t border-purple-100 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <button className="p-2 rounded-lg text-auxerta-text/40 hover:text-auxerta-text/60 transition-colors">
+                <button className="p-2 rounded-sm text-auxerta-text/40 hover:text-auxerta-text/60 transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                   </svg>
                 </button>
-                <button className="p-2 rounded-lg text-auxerta-text/40 hover:text-auxerta-text/60 transition-colors">
+                <button className="p-2 rounded-sm text-auxerta-text/40 hover:text-auxerta-text/60 transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
                 </button>
               </div>
-              <button className="p-2 rounded-lg text-purple-600 hover:text-purple-700 transition-colors">
+              <button className="p-2 rounded-sm text-purple-600 hover:text-purple-700 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>

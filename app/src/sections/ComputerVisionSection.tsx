@@ -41,7 +41,7 @@ export function ComputerVisionSection() {
   }, []);
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       id="services"
       className="bg-auxerta-offwhite py-24 px-[8vw]"
@@ -55,7 +55,7 @@ export function ComputerVisionSection() {
               Computer Vision
             </h2>
             <p className="body-text text-auxerta-muted mb-8">
-              Labels for images and video. We handle boxes, polygons, keypoints, 
+              Labels for images and video. We handle boxes, polygons, keypoints,
               masks, and frame-by-frame tracking.
             </p>
 
@@ -64,9 +64,9 @@ export function ComputerVisionSection() {
               {features.map((feature, i) => {
                 const Icon = feature.icon;
                 return (
-                  <div 
+                  <div
                     key={i}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-purple-100"
+                    className="flex items-center gap-3 px-4 py-3 rounded-md bg-white border border-purple-100"
                   >
                     <Icon className="w-5 h-5" style={{ color: feature.color }} />
                     <span className="text-sm font-medium text-auxerta-text">{feature.label}</span>
@@ -83,9 +83,9 @@ export function ComputerVisionSection() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative w-[80%] h-[70%]">
                   {/* Background shapes */}
-                  <div className="absolute top-[20%] left-[10%] w-24 h-32 rounded-2xl bg-gradient-to-br from-purple-200 to-purple-300" />
-                  <div className="absolute top-[40%] right-[15%] w-28 h-28 rounded-full bg-gradient-to-br from-purple-300 to-purple-400" />
-                  <div className="absolute bottom-[15%] left-[30%] w-20 h-20 rounded-xl bg-gradient-to-br from-purple-200 to-purple-300 rotate-12" />
+                  <div className="absolute top-[20%] left-[10%] w-24 h-32 rounded-md bg-gradient-to-br from-purple-200 to-purple-300" />
+                  <div className="absolute top-[40%] right-[15%] w-28 h-28 rounded-md bg-gradient-to-br from-purple-300 to-purple-400" />
+                  <div className="absolute bottom-[15%] left-[30%] w-20 h-20 rounded-md bg-gradient-to-br from-purple-200 to-purple-300 rotate-12" />
 
                   {/* Bounding Box 1 */}
                   <div className="absolute top-[15%] left-[5%] w-32 h-40 border-2 border-purple-500 rounded-lg">
@@ -104,7 +104,7 @@ export function ComputerVisionSection() {
                   {/* Keypoints */}
                   <div className="absolute top-[25%] left-[20%]">
                     {[...Array(8)].map((_, i) => (
-                      <div 
+                      <div
                         key={i}
                         className="absolute w-2 h-2 bg-purple-500 rounded-full"
                         style={{

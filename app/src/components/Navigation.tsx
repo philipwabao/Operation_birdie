@@ -36,7 +36,7 @@ export function Navigation() {
           </a>
           {/* Animated Gradient Underline */}
           <div
-            className="w-32 h-1 mt-1 rounded-full"
+            className="w-32 h-1 mt-1 rounded-sm"
             style={{
               background: '#9B7BC7',
               animation: 'color-shift 6s ease-in-out forwards'

@@ -25,7 +25,7 @@
     --border: 240 7% 8% / 0.14;
     --input: 240 5.9% 90%;
     --ring: 270 40% 75%;
-    --radius: 1.875rem;
+    --radius: 0.375rem;
   }
 
   .dark {
@@ -55,11 +55,11 @@
   * {
     @apply border-border;
   }
-  
+
   html {
     scroll-behavior: auto;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
@@ -71,15 +71,15 @@
   .font-display {
     font-family: 'Space Grotesk', sans-serif;
   }
-  
+
   .font-mono {
     font-family: 'IBM Plex Mono', monospace;
   }
-  
+
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .grain-overlay {
     position: fixed;
     top: 0;
@@ -92,12 +92,12 @@
     mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
-  
+
   .dark .grain-overlay {
     mix-blend-mode: screen;
     opacity: 0.03;
   }
-  
+
   .headline-xl {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
@@ -105,7 +105,7 @@
     letter-spacing: -0.02em;
     font-size: clamp(44px, 6.2vw, 96px);
   }
-  
+
   .headline-lg {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
@@ -113,7 +113,7 @@
     letter-spacing: -0.02em;
     font-size: clamp(38px, 5vw, 78px);
   }
-  
+
   .headline-md {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
@@ -121,14 +121,14 @@
     letter-spacing: -0.01em;
     font-size: clamp(28px, 3.5vw, 48px);
   }
-  
+
   .body-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     line-height: 1.6;
     font-size: clamp(14px, 1.1vw, 18px);
   }
-  
+
   .micro-text {
     font-family: 'IBM Plex Mono', monospace;
     font-weight: 500;
@@ -136,21 +136,21 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  
+
   .btn-accent {
-    @apply font-medium px-6 py-3 rounded-full transition-transform duration-200;
+    @apply font-medium px-6 py-3 rounded-md transition-transform duration-200;
     background: linear-gradient(135deg, #C4A5E0 0%, #B8A0D9 100%);
     color: #1a1a1a;
   }
-  
+
   .btn-accent:hover {
     transform: translateY(-2px) scale(1.02);
   }
-  
+
   .link-underline {
     position: relative;
   }
-  
+
   .link-underline::after {
     content: '';
     position: absolute;
@@ -163,23 +163,23 @@
     transform-origin: left;
     transition: transform 0.3s ease;
   }
-  
+
   .link-underline:hover::after {
     transform: scaleX(1);
   }
-  
+
   .section-pinned {
     @apply w-screen h-screen relative overflow-hidden;
   }
-  
+
   .section-flowing {
     @apply w-full relative;
   }
-  
+
   .will-change-transform {
     will-change: transform;
   }
-  
+
   .gradient-text {
     background: linear-gradient(90deg, #2563EB 0%, #38BDF8 30%, #A7F3D0 60%, #9B7BC7 100%);
     -webkit-background-clip: text;
@@ -190,60 +190,80 @@
 
 /* Gradient Orb Animations */
 @keyframes orb-float-1 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(30px, -40px) scale(1.05);
   }
+
   50% {
     transform: translate(-20px, 20px) scale(0.95);
   }
+
   75% {
     transform: translate(40px, 30px) scale(1.02);
   }
 }
 
 @keyframes orb-float-2 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(-40px, 30px) scale(0.98);
   }
+
   50% {
     transform: translate(25px, -25px) scale(1.03);
   }
+
   75% {
     transform: translate(-15px, -40px) scale(1);
   }
 }
 
 @keyframes orb-float-3 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(35px, 25px) scale(1.02);
   }
+
   50% {
     transform: translate(-30px, -30px) scale(0.97);
   }
+
   75% {
     transform: translate(20px, -35px) scale(1.04);
   }
 }
 
 @keyframes orb-float-4 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(-25px, -35px) scale(1.03);
   }
+
   50% {
     transform: translate(40px, 15px) scale(0.96);
   }
+
   75% {
     transform: translate(-35px, 30px) scale(1.01);
   }

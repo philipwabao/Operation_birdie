@@ -50,7 +50,7 @@ export function NaturalLanguageSection() {
   }, []);
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="bg-auxerta-offwhite py-24 px-[8vw] border-t border-purple-100"
     >
@@ -58,7 +58,7 @@ export function NaturalLanguageSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Visual */}
           <div className="relative aspect-square max-w-md mx-auto order-2 lg:order-1">
-            <div className="absolute inset-0 rounded-3xl overflow-hidden bg-gradient-to-br from-purple-50 to-white border border-purple-100 p-6">
+            <div className="absolute inset-0 rounded-md overflow-hidden bg-gradient-to-br from-purple-50 to-white border border-purple-100 p-6">
               {/* Text Editor Interface */}
               <div className="h-full flex flex-col">
                 {/* Editor Header */}
@@ -74,12 +74,12 @@ export function NaturalLanguageSection() {
                   <div className="flex flex-wrap gap-1 text-lg leading-relaxed">
                     {sampleText.map((item, i) => (
                       <span key={i}>
-                        <span 
+                        <span
                           className="px-1 py-0.5 rounded"
-                          style={item.color ? { 
+                          style={item.color ? {
                             backgroundColor: `${item.color}20`,
                             color: item.color,
-                            fontWeight: 500 
+                            fontWeight: 500
                           } : {}}
                         >
                           {item.text}
@@ -90,25 +90,25 @@ export function NaturalLanguageSection() {
 
                   {/* Entity Labels */}
                   <div className="flex flex-wrap gap-2 mt-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                    <span className="px-3 py-1 rounded-sm text-xs font-medium bg-purple-100 text-purple-700">
                       ORG: Organization
                     </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                    <span className="px-3 py-1 rounded-sm text-xs font-medium bg-purple-100 text-purple-700">
                       LOC: Location
                     </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                    <span className="px-3 py-1 rounded-sm text-xs font-medium bg-purple-100 text-purple-700">
                       TIME: Time
                     </span>
                   </div>
 
                   {/* Sentiment Analysis */}
-                  <div className="mt-6 p-4 rounded-xl bg-white border border-purple-100">
+                  <div className="mt-6 p-4 rounded-md bg-white border border-purple-100">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-auxerta-text">Sentiment Score</span>
                       <span className="text-sm font-bold text-purple-600">Positive (85%)</span>
                     </div>
-                    <div className="h-2 bg-purple-100 rounded-full overflow-hidden">
-                      <div className="h-full w-[85%] bg-gradient-to-r from-purple-400 to-purple-600 rounded-full" />
+                    <div className="h-2 bg-purple-100 rounded-sm overflow-hidden">
+                      <div className="h-full w-[85%] bg-gradient-to-r from-purple-400 to-purple-600 rounded-sm" />
                     </div>
                   </div>
                 </div>
@@ -123,7 +123,7 @@ export function NaturalLanguageSection() {
               Natural Language
             </h2>
             <p className="body-text text-auxerta-muted mb-8">
-              Text labeling for NER, classification, sentiment, and LLM fine-tuning 
+              Text labeling for NER, classification, sentiment, and LLM fine-tuning
               including RLHF and instruction data.
             </p>
 
@@ -132,9 +132,9 @@ export function NaturalLanguageSection() {
               {features.map((feature, i) => {
                 const Icon = feature.icon;
                 return (
-                  <div 
+                  <div
                     key={i}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-purple-100"
+                    className="flex items-center gap-3 px-4 py-3 rounded-md bg-white border border-purple-100"
                   >
                     <Icon className="w-5 h-5" style={{ color: feature.color }} />
                     <span className="text-sm font-medium text-auxerta-text">{feature.label}</span>

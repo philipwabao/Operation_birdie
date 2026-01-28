@@ -7,22 +7,22 @@ gsap.registerPlugin(ScrollTrigger);
 const models = [
   {
     id: 1,
-    name: 'Model Alpha',
+    name: 'Neognathae Owl',
     image: '/model-1.jpg'
   },
   {
     id: 2,
-    name: 'Model Beta',
+    name: 'Neognathae Parrot',
     image: '/model-2.jpg'
   },
   {
     id: 3,
-    name: 'Model Gamma',
+    name: 'Neognathae Pidgin',
     image: '/model-3.jpg'
   },
   {
     id: 4,
-    name: 'Model Delta',
+    name: 'Neognathae Starling',
     image: '/model-4.jpg'
   },
 ];
@@ -74,7 +74,7 @@ export function UpcomingModelsSection() {
           {models.map((model) => (
             <div
               key={model.id}
-              className="group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 aspect-[21/9]"
+              className="group relative rounded-md overflow-hidden bg-white/5 border border-white/10 aspect-[21/9]"
             >
               {/* Background Image */}
               <img
@@ -91,7 +91,7 @@ export function UpcomingModelsSection() {
                 <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-3">
                   {model.name}
                 </h3>
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
+                <span className="inline-block px-3 py-1 rounded-sm text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
                   Coming Soon
                 </span>
               </div>

@@ -100,19 +100,19 @@ export function FooterSection() {
         <div className="flex items-center gap-4">
           <a
             href="#"
-            className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 rounded-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Twitter className="w-5 h-5" />
           </a>
           <a
             href="#"
-            className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 rounded-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Github className="w-5 h-5" />
           </a>
           <a
             href="#"
-            className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 rounded-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Linkedin className="w-5 h-5" />
           </a>

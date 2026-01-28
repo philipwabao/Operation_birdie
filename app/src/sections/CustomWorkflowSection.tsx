@@ -40,7 +40,7 @@ export function CustomWorkflowSection() {
   }, []);
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="bg-auxerta-offwhite py-24 px-[8vw] border-t border-purple-100"
     >
@@ -52,7 +52,7 @@ export function CustomWorkflowSection() {
             Custom Workflows
           </h2>
           <p className="body-text text-auxerta-muted max-w-xl mx-auto">
-            Need something specific? We'll work with you to define the schema, 
+            Need something specific? We'll work with you to define the schema,
             handle edge cases, and iterate.
           </p>
         </div>
@@ -69,21 +69,21 @@ export function CustomWorkflowSection() {
               return (
                 <div key={i} className="flex flex-col items-center text-center">
                   {/* Icon Circle */}
-                  <div className="w-16 h-16 rounded-2xl bg-white border-2 border-purple-200 flex items-center justify-center mb-4 shadow-sm relative z-10">
+                  <div className="w-16 h-16 rounded-md bg-white border-2 border-purple-200 flex items-center justify-center mb-4 shadow-sm relative z-10">
                     <Icon className="w-7 h-7 text-purple-600" />
                   </div>
-                  
+
                   {/* Step Number */}
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mb-2">
+                  <div className="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center mb-2">
                     <span className="text-sm font-bold text-purple-700">{i + 1}</span>
                   </div>
-                  
+
                   {/* Label */}
                   <h4 className="text-sm font-semibold text-auxerta-text mb-1">{step.label}</h4>
                   <p className="text-xs text-auxerta-muted">{step.desc}</p>
 
                   {/* Checkmark */}
-                  <div className="mt-3 w-6 h-6 rounded-full bg-green-400 flex items-center justify-center">
+                  <div className="mt-3 w-6 h-6 rounded-sm bg-green-400 flex items-center justify-center">
                     <CheckCircle className="w-4 h-4 text-white" />
                   </div>
                 </div>
