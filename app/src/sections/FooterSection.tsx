@@ -26,7 +26,7 @@ export function FooterSection() {
   }, []);
 
   return (
-    <footer 
+    <footer
       ref={sectionRef}
       className="bg-auxerta-dark py-16 px-[8vw] border-t border-white/10"
     >
@@ -45,8 +45,8 @@ export function FooterSection() {
           <ul className="space-y-3">
             {footerLinks.services.map((link) => (
               <li key={link}>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="body-text text-white/70 hover:text-white transition-colors"
                 >
                   {link}
@@ -62,8 +62,8 @@ export function FooterSection() {
           <ul className="space-y-3">
             {footerLinks.company.map((link) => (
               <li key={link}>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="body-text text-white/70 hover:text-white transition-colors"
                 >
                   {link}
@@ -79,8 +79,8 @@ export function FooterSection() {
           <ul className="space-y-3">
             {footerLinks.resources.map((link) => (
               <li key={link}>
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="body-text text-white/70 hover:text-white transition-colors"
                 >
                   {link}
@@ -94,24 +94,24 @@ export function FooterSection() {
       {/* Bottom Bar */}
       <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="micro-text text-white/40">
-          © Auxerta {new Date().getFullYear()}
+          © 2026 Auxerta, Inc
         </p>
-        
+
         <div className="flex items-center gap-4">
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Twitter className="w-5 h-5" />
           </a>
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Github className="w-5 h-5" />
           </a>
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Linkedin className="w-5 h-5" />
