@@ -14,8 +14,8 @@ export function Navigation() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${scrolled
-          ? 'bg-auxerta-offwhite/80 backdrop-blur-md py-4'
-          : 'bg-transparent py-6'
+        ? 'bg-auxerta-offwhite/80 backdrop-blur-md py-4'
+        : 'bg-transparent py-6'
         }`}
     >
       <div className="flex items-center justify-between px-[4vw]">
@@ -34,12 +34,23 @@ export function Navigation() {
           <a href="#" className="font-display font-bold text-2xl text-auxerta-text tracking-tight">
             Auxerta
           </a>
-          {/* Cream Purple Gradient Underline */}
-          <div className="w-24 h-1 mt-1 rounded-full"
+          {/* Animated Gradient Underline */}
+          <div
+            className="w-32 h-1 mt-1 rounded-full"
             style={{
-              background: 'linear-gradient(90deg, #C4A5E0 0%, #9B7BC7 50%, #B8A0D9 100%)'
+              background: '#9B7BC7',
+              animation: 'color-shift 6s ease-in-out forwards'
             }}
           />
+          <style>{`
+            @keyframes color-shift {
+              0% { background: #2563EB; opacity: 0.7; }
+              15% { background: #2563EB; opacity: 1; }
+              30% { background: #38BDF8; }
+              50% { background: #A7F3D0; }
+              70%, 100% { background: #9B7BC7; }
+            }
+          `}</style>
         </div>
 
         {/* Right Nav Links + Actions */}

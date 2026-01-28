@@ -57,7 +57,7 @@ export function HeroSection() {
             className="text-base text-auxerta-text/70 font-light"
             style={{ letterSpacing: '0.02em' }}
           >
-            If you need our eval and training service contact us at
+            Need eval and training service contact us at
           </span>
           <a
             href="mailto:service@auxerta.com"
