@@ -22,7 +22,7 @@ export function Navigation() {
         {/* Left Nav Links */}
         <div className="hidden md:flex items-center gap-8 flex-1">
           <a href="#services" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
-            Services
+            Research
           </a>
           <a href="#models" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
             Models
@@ -59,8 +59,8 @@ export function Navigation() {
             <a href="#about" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
               About
             </a>
-            <a href="#contact" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
-              Contact
+            <a href="mailto:invest@auxerta.com" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+              Invest
             </a>
           </div>
 

@@ -146,6 +146,15 @@ export function HeroSection() {
               </button>
             </div>
           </div>
+          {/* NVIDIA Inception Badge */}
+          <div className="flex justify-center mt-6">
+            <img
+              src="/nvidia-inception-badge.png"
+              alt="NVIDIA Inception Program"
+              style={{ minHeight: '30px', height: '40px' }}
+              className="object-contain"
+            />
+          </div>
         </div>
       </div>
     </section>
