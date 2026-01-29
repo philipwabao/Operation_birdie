@@ -97,6 +97,11 @@ export function FooterSection() {
           © 2026 Auxerta, Inc
         </p>
 
+        {/* Location Badge */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/5 border border-white/10">
+          <span className="text-xs text-white/60">US · JAPAN</span>
+        </div>
+
         <div className="flex items-center gap-4">
           <a
             href="#"

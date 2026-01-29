@@ -1,7 +1,6 @@
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin } from 'lucide-react';
 import { AnimatedBirds } from '../components/AnimatedBirds';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -37,11 +36,33 @@ export function HeroSection() {
         ref={contentRef}
         className="w-full max-w-5xl will-change-transform relative z-10"
       >
-        {/* Location Badge */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-purple-100/50">
-            <MapPin className="w-4 h-4 text-purple-600" />
-            <span className="micro-text text-purple-700">US · Japan</span>
+        {/* Gradient Bars Mark */}
+        <div className="flex justify-center mb-4">
+          <div className="flex gap-0.5">
+            {/* Mint to Light Blue */}
+            <div
+              className="w-2.5 h-7 rounded-md transition-all duration-300 hover:-translate-y-0.5"
+              style={{
+                background: 'linear-gradient(180deg, #A7F3D0 0%, #38BDF8 100%)',
+                boxShadow: '0 2px 10px rgba(37, 99, 235, 0.15)'
+              }}
+            />
+            {/* Light Blue to Blue */}
+            <div
+              className="w-2.5 h-7 rounded-md transition-all duration-300 hover:-translate-y-0.5"
+              style={{
+                background: 'linear-gradient(180deg, #38BDF8 0%, #2563EB 100%)',
+                boxShadow: '0 2px 10px rgba(37, 99, 235, 0.15)'
+              }}
+            />
+            {/* Blue to Purple */}
+            <div
+              className="w-2.5 h-7 rounded-md transition-all duration-300 hover:-translate-y-0.5"
+              style={{
+                background: 'linear-gradient(180deg, #2563EB 0%, #7C3AED 100%)',
+                boxShadow: '0 2px 10px rgba(37, 99, 235, 0.15)'
+              }}
+            />
           </div>
         </div>
 
