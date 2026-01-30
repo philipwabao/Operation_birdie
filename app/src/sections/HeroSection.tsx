@@ -83,14 +83,14 @@ export function HeroSection() {
             {/* Chat Content - Demo Tabs */}
             <div className="p-6">
               {/* Tab Headers */}
-              <div className="flex gap-2 mb-4 border-b border-purple-100">
-                <button className="px-4 py-2 text-sm font-medium text-purple-600 border-b-2 border-purple-600">
+              <div className="flex gap-2 mb-4 border-b border-purple-100 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-purple-600 border-b-2 border-purple-600 flex-shrink-0">
                   Model Specs
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60">
+                <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60 flex-shrink-0">
                   Benchmarks
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60">
+                <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60 flex-shrink-0">
                   API Example
                 </button>
               </div>
