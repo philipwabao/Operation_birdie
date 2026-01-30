@@ -28,7 +28,7 @@ export function FooterSection() {
   return (
     <footer
       ref={sectionRef}
-      className="bg-auxerta-dark py-16 px-[8vw] border-t border-white/10"
+      className="bg-auxerta-dark py-16 px-6 md:px-[8vw] border-t border-white/10"
     >
       {/* Main Footer Content */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">

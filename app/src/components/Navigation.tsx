@@ -18,7 +18,7 @@ export function Navigation() {
         : 'bg-transparent py-6'
         }`}
     >
-      <div className="flex items-center justify-between px-[4vw]">
+      <div className="flex items-center justify-between px-6 md:px-[4vw]">
         {/* Left Nav Links */}
         <div className="hidden md:flex items-center gap-8 flex-1">
           <a href="#services" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">

@@ -20,7 +20,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen bg-auxerta-offwhite flex flex-col items-center justify-center pt-24 pb-16 px-[8vw] relative overflow-hidden"
+      className="min-h-screen bg-auxerta-offwhite flex flex-col items-center justify-center pt-24 pb-16 px-4 md:px-[8vw] relative overflow-hidden"
     >
 
 
