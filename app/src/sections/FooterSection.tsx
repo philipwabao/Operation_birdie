@@ -6,7 +6,7 @@ import { Twitter, Github, Linkedin } from 'lucide-react';
 gsap.registerPlugin(ScrollTrigger);
 
 const footerLinks = {
-  services: ['Computer Vision', 'Natural Language', 'Custom Workflows'],
+  platform: ['Research', 'Models', 'Relations'],
   company: ['About', 'Careers', 'Contact'],
   resources: ['Documentation', 'API', 'Blog'],
 };
@@ -39,11 +39,11 @@ export function FooterSection() {
           </a>
         </div>
 
-        {/* Services */}
+        {/* Platform */}
         <div>
-          <h4 className="micro-text text-white/40 mb-4">Services</h4>
+          <h4 className="micro-text text-white/40 mb-4">Platform</h4>
           <ul className="space-y-3">
-            {footerLinks.services.map((link) => (
+            {footerLinks.platform.map((link) => (
               <li key={link}>
                 <a
                   href="#"

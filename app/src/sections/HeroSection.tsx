@@ -9,21 +9,13 @@ export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    const section = sectionRef.current;
-    const content = contentRef.current;
+  // GSAP animation removed to fix visibility issues
 
-    if (!section || !content) return;
+  // Hover explosion state removed
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(content,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.2 }
-      );
-    }, section);
 
-    return () => ctx.revert();
-  }, []);
+
+
 
   return (
     <section
@@ -37,7 +29,7 @@ export function HeroSection() {
         className="w-full max-w-5xl will-change-transform relative z-10"
       >
         {/* Gradient Bars Mark */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
           <div className="flex gap-0.5">
             {/* Mint to Light Blue */}
             <div
@@ -66,61 +58,10 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Main Headline */}
-        <h1 className="headline-lg text-auxerta-text text-center mb-8">
-          We build models that{' '}
-          <span className="gradient-text">excel</span>
-        </h1>
 
-        {/* Contact CTA - Premium Style */}
-        <div className="flex flex-wrap justify-center items-center gap-3 mb-10">
-          <span
-            className="text-base text-auxerta-text/70 font-light"
-            style={{ letterSpacing: '0.02em' }}
-          >
-            Need eval and training service contact us at
-          </span>
-          <a
-            href="mailto:service@auxerta.com"
-            className="inline-flex items-center px-6 py-2.5 rounded-md font-medium transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-0.5"
-            style={{
-              background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(139, 92, 246, 0.08) 100%)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(167, 139, 250, 0.3)',
-              boxShadow: '0 4px 20px rgba(139, 92, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
-              color: '#7c3aed',
-              letterSpacing: '0.01em',
-            }}
-          >
-            service@auxerta.com
-          </a>
-        </div>
 
-        {/* Service Categories - Premium Pills */}
-        <div className="flex flex-wrap justify-center gap-4 mb-14">
-          {['Computer Vision', 'Natural Language', 'Custom Workflow'].map((service) => (
-            <div
-              key={service}
-              className="group px-7 py-3.5 rounded-md cursor-default transition-all duration-300 ease-out hover:scale-[1.03] hover:-translate-y-0.5"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 245, 255, 0.8) 100%)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(167, 139, 250, 0.2)',
-                boxShadow: '0 4px 24px rgba(139, 92, 246, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
-              }}
-            >
-              <span
-                className="text-sm font-medium bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: 'linear-gradient(135deg, #1f1f23 0%, #4c1d95 100%)',
-                  letterSpacing: '0.03em',
-                }}
-              >
-                {service}
-              </span>
-            </div>
-          ))}
-        </div>
+
+
 
         {/* Chat Interface */}
         <div className="max-w-3xl mx-auto">
@@ -139,11 +80,32 @@ export function HeroSection() {
               <div className="w-16" />
             </div>
 
-            {/* Chat Content */}
-            <div className="p-8 min-h-[200px] flex items-center">
-              <p className="text-2xl md:text-3xl font-display text-auxerta-text/30">
-                Coming soon...
-              </p>
+            {/* Chat Content - Demo Tabs */}
+            <div className="p-6">
+              {/* Tab Headers */}
+              <div className="flex gap-2 mb-4 border-b border-purple-100">
+                <button className="px-4 py-2 text-sm font-medium text-purple-600 border-b-2 border-purple-600">
+                  Model Specs
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60">
+                  Benchmarks
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60">
+                  API Example
+                </button>
+              </div>
+
+              {/* Model Specs Content */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-3 border-b border-purple-50">
+                  <span className="text-sm text-auxerta-muted">Context Window</span>
+                  <span className="text-base font-mono font-medium text-purple-600">144K tokens</span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-sm text-auxerta-muted">Full Specifications</span>
+                  <span className="text-xs px-2 py-1 rounded-sm bg-purple-100 text-purple-700 font-medium">Coming Soon</span>
+                </div>
+              </div>
             </div>
 
             {/* Input Area */}
@@ -167,6 +129,24 @@ export function HeroSection() {
               </button>
             </div>
           </div>
+
+          {/* Upcoming Models Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 mb-2">
+            {[
+              { name: 'Neognathae Owl', status: 'Coming Soon' },
+              { name: 'Neognathae Parrot', status: 'Coming Soon' },
+              { name: 'Neognathae Pidgin', status: 'Coming Soon' },
+              { name: 'Neognathae Starling', status: 'Coming Soon' }
+            ].map((model, i) => (
+              <div key={i} className="bg-white/50 border border-purple-100 rounded-lg p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
+                <div className="text-xs font-mono font-bold text-auxerta-text mb-2">{model.name}</div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 font-medium uppercase tracking-wide">
+                  {model.status}
+                </span>
+              </div>
+            ))}
+          </div>
+
           {/* NVIDIA Inception Badge */}
           <div className="flex justify-center mt-6">
             <img

@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/sections/HeroSection';
-import { UpcomingModelsSection } from '@/sections/UpcomingModelsSection';
+
 import { FooterSection } from '@/sections/FooterSection';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -29,7 +29,7 @@ function App() {
       {/* Main Content */}
       <main className="relative">
         <HeroSection />
-        <UpcomingModelsSection />
+
         <FooterSection />
       </main>
     </div>
