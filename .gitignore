@@ -7,3 +7,13 @@ runs/
 data_bin/
 corpora/
 tokenizer_artifacts/
+
+# Node/Vite
+node_modules/
+dist/
+.env*
+.vite/
+app/node_modules/
+app/dist/
+app/.env*
+app/.vite/
