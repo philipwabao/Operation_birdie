@@ -28,6 +28,7 @@ export function FooterSection() {
   return (
     <footer
       ref={sectionRef}
+      id="about"
       className="bg-gradient-to-b from-auxerta-dark to-[#070C12] py-16 px-6 md:px-[8vw] border-t border-white/10"
     >
       <div className="max-w-6xl mx-auto">

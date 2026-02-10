@@ -9,7 +9,7 @@ export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [accessKey, setAccessKey] = useState('');
-  const [accessState, setAccessState] = useState<'idle' | 'verifying' | 'granted' | 'denied'>('idle');
+  const [accessState, setAccessState] = useState<'idle' | 'verifying' | 'granted' | 'denied' | 'unavailable' | 'rate_limited'>('idle');
   const [briefingLines, setBriefingLines] = useState<string[]>([]);
   const [showHint, setShowHint] = useState(false);
   const [hintPhase, setHintPhase] = useState<'idle' | 'loading' | 'typing' | 'done'>('idle');
@@ -38,13 +38,19 @@ export function HeroSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: accessKey.trim() })
       });
+      if (response.status === 429) {
+        setTraceLines([{ level: 'ERROR', text: 'trace service: rate limited' }]);
+        return;
+      }
+      if (!response.ok) {
+        setTraceLines([{ level: 'ERROR', text: 'trace service: unavailable' }]);
+        return;
+      }
       const data = await response.json().catch(() => ({}));
       const lines = Array.isArray(data?.trace) ? data.trace : [];
-      setTraceLines(lines);
-      setAccessState(data?.ok ? 'granted' : 'denied');
+      setTraceLines(lines.length ? lines : [{ level: 'ERROR', text: 'trace: no output' }]);
     } catch {
-      setTraceLines([]);
-      setAccessState('denied');
+      setTraceLines([{ level: 'ERROR', text: 'trace service: unavailable' }]);
     }
   };
 
@@ -146,13 +152,22 @@ export function HeroSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: trimmed })
       });
-      if (!response.ok) throw new Error('Request failed');
+      if (response.status === 429) {
+        setAccessState('rate_limited');
+        setBriefingLines([]);
+        return;
+      }
+      if (!response.ok) {
+        setAccessState('unavailable');
+        setBriefingLines([]);
+        return;
+      }
       const data = await response.json().catch(() => ({}));
       const ok = Boolean(data?.ok);
       setAccessState(ok ? 'granted' : 'denied');
       setBriefingLines(Array.isArray(data?.briefing) ? data.briefing : []);
     } catch {
-      setAccessState('denied');
+      setAccessState('unavailable');
       setBriefingLines([]);
     }
   };
@@ -183,7 +198,7 @@ export function HeroSection() {
         className="w-full max-w-6xl will-change-transform relative z-10"
       >
         <div className="grid gap-10 lg:grid-cols-[1fr_1.35fr] items-start">
-          <div className="order-2 lg:order-1 space-y-6">
+          <div className="order-2 lg:order-1 space-y-5">
             {/* Gradient Bars Mark */}
             <div className="flex justify-start">
               <div className="flex gap-0.5">
@@ -212,15 +227,19 @@ export function HeroSection() {
             </div>
 
             {/* Private Preview Access */}
-            <div id="private-preview" className="scroll-mt-28 rounded-2xl border border-auxerta-text/10 bg-white/70 p-4 shadow-sm backdrop-blur-sm space-y-3">
+            <div id="services" className="scroll-mt-28" />
+            <div
+              id="private-preview"
+              className="scroll-mt-28 rounded-2xl border border-auxerta-text/10 bg-white/70 p-[14px] shadow-sm backdrop-blur-sm space-y-3"
+            >
               <div className="flex items-center justify-between">
                 <span className="micro-text text-auxerta-muted">Private Preview</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-auxerta-accent/10 text-auxerta-accent font-medium uppercase tracking-wide">
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-auxerta-accent/10 text-auxerta-accent font-medium uppercase tracking-wide">
                   Invite Only
                 </span>
               </div>
               <form
-                className="flex items-center gap-2 rounded-xl border border-auxerta-text/10 bg-white px-3 py-2.5"
+                className="flex items-center gap-2 rounded-xl border border-auxerta-text/10 bg-white px-3 py-2"
                 onSubmit={handleAccessSubmit}
               >
                 <input
@@ -229,10 +248,13 @@ export function HeroSection() {
                   value={accessKey}
                   onChange={(event) => {
                     setAccessKey(event.target.value);
-                    if (accessState !== 'idle') {
-                      setAccessState('idle');
-                      setBriefingLines([]);
-                    }
+                    if (accessState !== 'idle') setAccessState('idle');
+                    setBriefingLines([]);
+                    setShowHint(false);
+                    setHintPhase('idle');
+                    setTypedLines([]);
+                    setHintTimes([]);
+                    setTraceLines([]);
                   }}
                   disabled={accessState === 'granted' || accessState === 'verifying'}
                   autoComplete="off"
@@ -253,22 +275,44 @@ export function HeroSection() {
                   Invalid key. Access is issued privately.
                 </p>
               )}
-                <div className="grid grid-cols-2 gap-3">
+              {accessState === 'unavailable' && (
+                <p className="text-xs text-auxerta-text/50">
+                  Verification service unavailable. Try again later.
+                </p>
+              )}
+              {accessState === 'rate_limited' && (
+                <p className="text-xs text-auxerta-text/50">
+                  Too many attempts. Try again later.
+                </p>
+              )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div className="rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-1.5">
-                    <div className="micro-text text-auxerta-muted text-[10px]">Status</div>
+                    <div className="micro-text text-auxerta-muted">Status</div>
                     <div className="text-sm font-semibold text-auxerta-text">
-                      {accessState === 'granted' ? 'Verified' : 'Active'}
+                      {accessState === 'granted'
+                        ? 'Verified'
+                        : accessState === 'verifying'
+                          ? 'Verifying'
+                          : accessState === 'rate_limited'
+                            ? 'Throttled'
+                            : accessState === 'unavailable'
+                              ? 'Offline'
+                              : 'Active'}
                     </div>
                   </div>
                   <div className="rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-1.5">
-                    <div className="micro-text text-auxerta-muted text-[10px]">Channel</div>
+                    <div className="micro-text text-auxerta-muted">Channel</div>
                     <div className="text-sm font-semibold text-auxerta-text">
-                      {accessState === 'granted' ? 'Enrolled' : 'Closed'}
+                      {accessState === 'granted'
+                        ? 'Enrolled'
+                        : accessState === 'verifying'
+                          ? 'Pending'
+                          : 'Closed'}
                     </div>
                   </div>
                 </div>
               <div className="rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-2.5">
-                <div className="micro-text text-auxerta-muted text-[10px] mb-2">Briefing</div>
+                <div className="micro-text text-auxerta-muted mb-2">Briefing</div>
                 {accessState === 'granted' && briefingLines.length > 0 ? (
                   <div className="space-y-1 text-xs font-mono text-auxerta-text/70">
                     {briefingLines.map((line) => (
@@ -284,7 +328,7 @@ export function HeroSection() {
                 )}
 
                 <div className="mt-3 flex items-center justify-between border-t border-auxerta-text/10 pt-2.5">
-                  <span className="micro-text text-auxerta-muted text-[10px]">Agent Trace</span>
+                  <span className="micro-text text-auxerta-muted">Agent Trace</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -301,7 +345,7 @@ export function HeroSection() {
                 </div>
 
                 {showHint && (
-                  <div className="mt-3 rounded-xl border border-white/10 bg-[#0D0F12] text-white/70 px-4 py-3 font-mono text-[11px] leading-relaxed relative overflow-hidden">
+                  <div className="mt-3 rounded-xl border border-white/10 bg-[#0D0F12] text-white/70 px-4 py-3 font-mono text-[12px] sm:text-[11px] leading-relaxed relative overflow-hidden">
                     <div
                       className="absolute inset-0 opacity-20"
                       style={{
@@ -343,11 +387,16 @@ export function HeroSection() {
                       )}
                     </div>
                     {hintPhase === 'typing' && traceLines.length > 0 && (
-                      <div className="mt-2 flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-white/40">
+                      <div className="mt-2 flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-white/40">
                         <span>decoding</span>
                         <span className="agent-dot">.</span>
                         <span className="agent-dot agent-dot-2">.</span>
                         <span className="agent-dot agent-dot-3">.</span>
+                      </div>
+                    )}
+                    {hintPhase !== 'loading' && traceLines.length === 0 && (
+                      <div className="mt-2 text-xs text-white/55">
+                        trace unavailable
                       </div>
                     )}
                     <style>{`
@@ -372,6 +421,16 @@ export function HeroSection() {
                         color: rgba(226, 232, 240, 0.72);
                         font-variant-ligatures: none;
                         animation: agent-flicker 3.2s ease-in-out infinite;
+                      }
+                      @media (max-width: 520px) {
+                        .agent-line {
+                          grid-template-columns: 56px 1fr;
+                          column-gap: 8px;
+                        }
+                        .agent-prefix,
+                        .agent-level {
+                          display: none;
+                        }
                       }
                       .agent-header {
                         display: flex;
@@ -416,6 +475,8 @@ export function HeroSection() {
                       }
                       .agent-text {
                         color: inherit;
+                        min-width: 0;
+                        overflow-wrap: anywhere;
                       }
                       .agent-error {
                         color: rgba(252, 165, 165, 0.95);
@@ -468,20 +529,20 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="h-px w-full bg-auxerta-text/10" />
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-auxerta-text/15 to-transparent" />
 
             {/* Upcoming Models Cards */}
-            <div className="rounded-2xl border border-auxerta-text/10 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
-              <div className="grid grid-cols-2 gap-4">
+            <div id="models" className="scroll-mt-28 rounded-2xl border border-auxerta-text/10 bg-white/70 p-4 sm:p-5 shadow-sm backdrop-blur-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {[
                   { name: 'Neognathae Owl', status: 'Coming Soon' },
                   { name: 'Neognathae Parrot', status: 'Coming Soon' },
                   { name: 'Neognathae Pidgin', status: 'Coming Soon' },
                   { name: 'Neognathae Starling', status: 'Coming Soon' }
                 ].map((model, i) => (
-                  <div key={i} className="bg-white/90 border border-auxerta-text/10 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all">
+                  <div key={i} className="bg-white/90 border border-auxerta-text/10 rounded-xl p-3.5 sm:p-4 flex flex-col items-center justify-center text-center shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all">
                     <div className="text-xs font-mono font-bold text-auxerta-text mb-2">{model.name}</div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-auxerta-accent/10 text-auxerta-accent font-medium uppercase tracking-wide">
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-auxerta-accent/10 text-auxerta-accent font-medium uppercase tracking-wide">
                       {model.status}
                     </span>
                   </div>
@@ -503,10 +564,10 @@ export function HeroSection() {
           </div>
 
           {/* Chat Interface */}
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 space-y-6">
             <div className="bg-white/95 rounded-2xl border border-auxerta-text/10 overflow-hidden shadow-card backdrop-blur-sm">
               {/* Header */}
-              <div className="px-6 py-4 border-b border-auxerta-text/10 flex items-center justify-between">
+              <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-auxerta-text/10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-auxerta-text/20" />
                   <div className="w-2.5 h-2.5 rounded-full bg-auxerta-text/15" />
@@ -520,7 +581,7 @@ export function HeroSection() {
               </div>
 
               {/* Chat Content - Demo Tabs */}
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Tab Headers */}
                 <div className="flex gap-2 mb-4 border-b border-auxerta-text/10 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-auxerta-accent border-b-2 border-auxerta-accent flex-shrink-0">
@@ -548,7 +609,7 @@ export function HeroSection() {
               </div>
 
               {/* Input Area */}
-              <div className="px-6 py-4 border-t border-auxerta-text/10 flex items-center justify-between bg-white/70">
+              <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-auxerta-text/10 flex items-center justify-between bg-white/70">
                 <div className="flex items-center gap-4">
                   <button className="p-2 rounded-md text-auxerta-text/40 hover:text-auxerta-text/60 hover:bg-auxerta-text/5 transition-colors">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -566,6 +627,58 @@ export function HeroSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
+              </div>
+            </div>
+
+            {/* Domain Data Card */}
+            <div className="rounded-2xl border border-auxerta-text/10 bg-white/80 p-5 sm:p-6 shadow-sm backdrop-blur-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <span className="micro-text text-auxerta-muted">Data Specialization</span>
+                  <h3 className="mt-2 text-lg sm:text-xl font-display font-semibold text-auxerta-text">
+                    Specialized data for reliable models.
+                  </h3>
+                  <p className="mt-2 text-sm text-auxerta-muted max-w-lg">
+                    We bring domain expertise tailored to each project.
+                  </p>
+                </div>
+                <div className="hidden sm:flex shrink-0 items-center gap-1.5">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-auxerta-accent/70" />
+                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-auxerta-text/15" />
+                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-auxerta-text/10" />
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <div className="micro-text text-auxerta-muted mb-2">Domains</div>
+                <div className="flex flex-wrap gap-2">
+                  {['Biology', 'Chemistry', 'Physics', 'Materials', 'Medicine', 'Robotics'].map((domain) => (
+                    <span
+                      key={domain}
+                      className="inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
+                    >
+                      {domain}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-auxerta-text/10 pt-4">
+                <div>
+                  <div className="text-sm font-medium text-auxerta-text">Want to learn more?</div>
+                  <a
+                    href="mailto:contact@auxerta.com"
+                    className="text-sm font-mono text-auxerta-muted hover:text-auxerta-text transition-colors"
+                  >
+                    contact@auxerta.com
+                  </a>
+                </div>
+                <a
+                  href="mailto:contact@auxerta.com"
+                  className="inline-flex items-center justify-center rounded-full border border-auxerta-text/10 bg-white px-5 py-2.5 text-sm font-medium text-auxerta-text hover:bg-auxerta-text/5 transition-colors"
+                >
+                  Contact
+                </a>
               </div>
             </div>
           </div>

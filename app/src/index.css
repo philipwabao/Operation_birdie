@@ -99,42 +99,48 @@
   }
 
   .headline-xl {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Sora', sans-serif;
     font-weight: 700;
     line-height: 0.95;
     letter-spacing: -0.02em;
-    font-size: clamp(44px, 6.2vw, 96px);
+    font-size: clamp(40px, 6.2vw, 92px);
   }
 
   .headline-lg {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Sora', sans-serif;
     font-weight: 700;
     line-height: 0.98;
     letter-spacing: -0.02em;
-    font-size: clamp(38px, 5vw, 78px);
+    font-size: clamp(34px, 5vw, 76px);
   }
 
   .headline-md {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Sora', sans-serif;
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.01em;
-    font-size: clamp(28px, 3.5vw, 48px);
+    font-size: clamp(26px, 3.5vw, 46px);
   }
 
   .body-text {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Source Sans 3', sans-serif;
     font-weight: 400;
     line-height: 1.6;
-    font-size: clamp(14px, 1.1vw, 18px);
+    font-size: clamp(15px, 1.1vw, 18px);
   }
 
   .micro-text {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 500;
-    font-size: 12px;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
+  }
+
+  @media (min-width: 640px) {
+    .micro-text {
+      font-size: 12px;
+    }
   }
 
   .btn-accent {

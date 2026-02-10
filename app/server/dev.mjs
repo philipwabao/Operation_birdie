@@ -5,7 +5,7 @@ import { createServer as createViteServer } from 'vite';
 import { handlePreviewTrace, handlePreviewValidate, isPreviewRoute } from './preview-auth.mjs';
 
 const port = Number(process.env.PORT ?? 5173);
-const host = process.env.HOST ?? '127.0.0.1';
+const host = process.env.HOST;
 
 const vite = await createViteServer({
   server: { middlewareMode: true },
@@ -43,6 +43,8 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(port, host, () => {
-  console.log(`Preview dev server running at http://${host}:${port}`);
+const listen = (callback) => (host ? server.listen(port, host, callback) : server.listen(port, callback));
+listen(() => {
+  const shownHost = host ?? 'localhost';
+  console.log(`Preview dev server running at http://${shownHost}:${port}`);
 });

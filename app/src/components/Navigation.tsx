@@ -3,6 +3,13 @@ import { useEffect, useState } from 'react';
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
 
+  const scrollToId = (id: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const handleRequestAccess = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const target = document.getElementById('private-preview');
@@ -30,10 +37,10 @@ export function Navigation() {
       <div className="mx-auto flex items-center justify-between px-6 md:px-10 max-w-6xl">
         {/* Left Nav Links */}
         <div className="hidden md:flex items-center gap-8 flex-1">
-          <a href="#services" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+          <a href="#services" onClick={scrollToId('services')} className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
             Research
           </a>
-          <a href="#models" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+          <a href="#models" onClick={scrollToId('models')} className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
             Models
           </a>
         </div>
@@ -44,7 +51,7 @@ export function Navigation() {
             {/* Bracket container */}
             <div className="relative px-5 py-2 group">
               {/* Auxerta Text */}
-              <a href="#" className="font-display font-bold text-2xl text-auxerta-text tracking-tight relative z-10">
+              <a href="#" className="font-display font-bold text-xl sm:text-2xl text-auxerta-text tracking-tight relative z-10">
                 Auxerta
               </a>
 
@@ -98,7 +105,7 @@ export function Navigation() {
         {/* Right Nav Links + Actions */}
         <div className="flex items-center gap-8 flex-1 justify-end">
           <div className="hidden md:flex items-center gap-8">
-            <a href="#about" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+            <a href="#about" onClick={scrollToId('about')} className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
               About
             </a>
             <a href="mailto:invest@auxerta.com" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">

@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { handlePreviewTrace, handlePreviewValidate, isPreviewRoute } from './preview-auth.mjs';
 
 const port = Number(process.env.PORT ?? 4173);
-const host = process.env.HOST ?? '127.0.0.1';
+const host = process.env.HOST;
 const distDir = path.resolve(process.cwd(), 'dist');
 
 const mimeTypes = new Map([
@@ -88,6 +88,8 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(port, host, () => {
-  console.log(`Preview server running at http://${host}:${port}`);
+const listen = (callback) => (host ? server.listen(port, host, callback) : server.listen(port, callback));
+listen(() => {
+  const shownHost = host ?? 'localhost';
+  console.log(`Preview server running at http://${shownHost}:${port}`);
 });
