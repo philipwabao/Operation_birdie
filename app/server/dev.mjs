@@ -12,7 +12,15 @@ const vite = await createViteServer({
   appType: 'custom',
 });
 
+function applySecurityHeaders(res) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+}
+
 const server = http.createServer((req, res) => {
+  applySecurityHeaders(res);
+
   if (isPreviewRoute(req)) {
     if (req.url?.startsWith('/api/preview/trace')) {
       handlePreviewTrace(req, res);

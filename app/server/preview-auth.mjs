@@ -2,11 +2,14 @@ import { timingSafeEqual } from 'node:crypto';
 
 const MAX_BODY_BYTES = 2048;
 const ACCESS_KEY = process.env.PREVIEW_ACCESS_KEY ?? '';
+const RATE_WINDOW_MS = Number(process.env.PREVIEW_RATE_WINDOW_MS ?? 60_000);
+const RATE_MAX_REQUESTS = Number(process.env.PREVIEW_RATE_MAX_REQUESTS ?? 30);
 const DEFAULT_BRIEFING = [
   'Signal: NEOGNATHAE v0.3',
   'Window: 144K, Latency: <200ms',
   'Channel: Closed, Status: Live',
 ];
+const rateLimiter = new Map();
 
 export function isPreviewRoute(req) {
   return req.url?.startsWith('/api/preview/') ?? false;
@@ -50,7 +53,45 @@ function sendJson(res, status, payload) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
   res.end(JSON.stringify(payload));
+}
+
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string') {
+    const first = forwarded.split(',')[0]?.trim();
+    if (first) return first;
+  }
+  return req.socket?.remoteAddress ?? 'unknown';
+}
+
+function isRateLimited(req) {
+  const now = Date.now();
+  const ip = getClientIp(req);
+  const pruneExpired = () => {
+    if (rateLimiter.size <= 2048) return;
+    for (const [key, entry] of rateLimiter) {
+      if (now >= entry.resetAt) rateLimiter.delete(key);
+    }
+  };
+  const existing = rateLimiter.get(ip);
+  if (!existing || now >= existing.resetAt) {
+    rateLimiter.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    pruneExpired();
+    return false;
+  }
+
+  existing.count += 1;
+  if (existing.count > RATE_MAX_REQUESTS) {
+    pruneExpired();
+    return true;
+  }
+
+  pruneExpired();
+  return false;
 }
 
 function getBriefingLines() {
@@ -65,6 +106,9 @@ export async function handlePreviewValidate(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return sendJson(res, 405, { ok: false });
+  }
+  if (isRateLimited(req)) {
+    return sendJson(res, 429, { ok: false });
   }
 
   if (!ACCESS_KEY) {
@@ -104,6 +148,9 @@ export async function handlePreviewTrace(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return sendJson(res, 405, { ok: false, trace: [] });
+  }
+  if (isRateLimited(req)) {
+    return sendJson(res, 429, { ok: false, trace: [] });
   }
 
   if (!ACCESS_KEY) {

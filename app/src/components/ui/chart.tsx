@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
+const SAFE_TOKEN = /^[a-zA-Z0-9_-]+$/
 
 export type ChartConfig = {
   [k in string]: {
@@ -70,6 +71,17 @@ function ChartContainer({
 }
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const safeChartId = SAFE_TOKEN.test(id) ? id : id.replace(/[^a-zA-Z0-9_-]/g, "")
+
+  const sanitizeToken = (value: string) =>
+    SAFE_TOKEN.test(value) ? value : value.replace(/[^a-zA-Z0-9_-]/g, "")
+
+  const sanitizeCssValue = (value: string | undefined) => {
+    if (!value) return undefined
+    if (/[;{}]/.test(value)) return undefined
+    return value.trim()
+  }
+
   const colorConfig = Object.entries(config).filter(
     ([, config]) => config.theme || config.color
   )
@@ -84,15 +96,17 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+${prefix} [data-chart="${safeChartId}"] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+              .map(([key, itemConfig]) => {
+                const safeKey = sanitizeToken(key)
+                const color =
+                  itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                  itemConfig.color
+                const safeColor = sanitizeCssValue(color)
+                return safeKey && safeColor ? `  --color-${safeKey}: ${safeColor};` : null
+              })
+              .join("\n")}
 }
 `
           )

@@ -2,12 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AnimatedBirds } from '../components/AnimatedBirds';
+import { ReliabilitySignalsDiagram } from '../components/ReliabilitySignalsDiagram';
+import { PrivateDeliveryMailAnimation } from '../components/PrivateDeliveryMailAnimation';
+import { VerticalsNodeGraph } from '../components/VerticalsNodeGraph';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const dataSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const serverName = 'srv-aux01';
+  const [sessionId] = useState(() => Math.random().toString(16).slice(2, 6).toUpperCase());
+  const [agentPid] = useState(() => Math.floor(4200 + Math.random() * 2600));
   const [accessKey, setAccessKey] = useState('');
   const [accessState, setAccessState] = useState<'idle' | 'verifying' | 'granted' | 'denied' | 'unavailable' | 'rate_limited'>('idle');
   const [briefingLines, setBriefingLines] = useState<string[]>([]);
@@ -15,16 +22,36 @@ export function HeroSection() {
   const [hintPhase, setHintPhase] = useState<'idle' | 'loading' | 'typing' | 'done'>('idle');
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const [hintTimes, setHintTimes] = useState<string[]>([]);
-  const sessionIdRef = useRef<string>('');
-  const serverNameRef = useRef<string>('srv-aux01');
-  const agentPidRef = useRef<number>(0);
-  if (!sessionIdRef.current) {
-    sessionIdRef.current = Math.random().toString(16).slice(2, 6).toUpperCase();
-  }
-  if (!agentPidRef.current) {
-    agentPidRef.current = Math.floor(4200 + Math.random() * 2600);
-  }
   const [traceLines, setTraceLines] = useState<{ text: string; level: string }[]>([]);
+  const [dataPanel, setDataPanel] = useState<0 | 1 | 2>(0);
+  const cycleDataPanel = (delta: -1 | 1) => {
+    setDataPanel((prev) => (((prev + delta + 3) % 3) as 0 | 1 | 2));
+  };
+
+  const createHintTimes = (count: number) => {
+    const randomBetween = (min: number, max: number) =>
+      Math.floor(min + Math.random() * (max - min));
+    const formatTime = (date: Date) => {
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
+    };
+
+    const base = new Date();
+    return Array.from({ length: count }, (_, index) => {
+      const offsetSeconds = index === 0 ? 0 : randomBetween(1, 3) + index;
+      return formatTime(new Date(base.getTime() + offsetSeconds * 1000));
+    });
+  };
+
+  const hideHintTrace = () => {
+    setShowHint(false);
+    setHintPhase('idle');
+    setTypedLines([]);
+    setHintTimes([]);
+    setTraceLines([]);
+  };
 
   const runTrace = async () => {
     setShowHint(true);
@@ -39,52 +66,36 @@ export function HeroSection() {
         body: JSON.stringify({ key: accessKey.trim() })
       });
       if (response.status === 429) {
-        setTraceLines([{ level: 'ERROR', text: 'trace service: rate limited' }]);
+        const lines = [{ level: 'ERROR', text: 'trace service: rate limited' }];
+        setTraceLines(lines);
+        setHintTimes(createHintTimes(lines.length));
         return;
       }
       if (!response.ok) {
-        setTraceLines([{ level: 'ERROR', text: 'trace service: unavailable' }]);
+        const lines = [{ level: 'ERROR', text: 'trace service: unavailable' }];
+        setTraceLines(lines);
+        setHintTimes(createHintTimes(lines.length));
         return;
       }
       const data = await response.json().catch(() => ({}));
       const lines = Array.isArray(data?.trace) ? data.trace : [];
-      setTraceLines(lines.length ? lines : [{ level: 'ERROR', text: 'trace: no output' }]);
+      const parsedLines = lines.length ? lines : [{ level: 'ERROR', text: 'trace: no output' }];
+      setTraceLines(parsedLines);
+      setHintTimes(createHintTimes(parsedLines.length));
     } catch {
-      setTraceLines([{ level: 'ERROR', text: 'trace service: unavailable' }]);
+      const lines = [{ level: 'ERROR', text: 'trace service: unavailable' }];
+      setTraceLines(lines);
+      setHintTimes(createHintTimes(lines.length));
     }
   };
 
   useEffect(() => {
-    if (!showHint) {
-      setHintPhase('idle');
-      setTypedLines([]);
-      setHintTimes([]);
-      setTraceLines([]);
-      return;
-    }
-
-    if (!traceLines.length) return;
+    if (!showHint || !traceLines.length) return;
 
     let cancelled = false;
     const timeouts: ReturnType<typeof setTimeout>[] = [];
     const randomBetween = (min: number, max: number) =>
       Math.floor(min + Math.random() * (max - min));
-    const formatTime = (date: Date) => {
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      return `${hours}:${minutes}:${seconds}`;
-    };
-
-    setHintPhase('loading');
-    setTypedLines([]);
-    const base = new Date();
-    setHintTimes(
-      traceLines.map((_, index) => {
-        const offsetSeconds = index === 0 ? 0 : randomBetween(1, 3) + index;
-        return formatTime(new Date(base.getTime() + offsetSeconds * 1000));
-      })
-    );
 
     const startTyping = () => {
       if (cancelled) return;
@@ -139,7 +150,7 @@ export function HeroSection() {
       cancelled = true;
       timeouts.forEach(clearTimeout);
     };
-  }, [showHint, accessState, traceLines]);
+  }, [showHint, traceLines]);
 
   const handleAccessSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -175,6 +186,34 @@ export function HeroSection() {
   // GSAP animation removed to fix visibility issues
 
   // Hover explosion state removed
+
+  const dataPanels = [
+    {
+      kind: 'chips',
+      kicker: 'Data Specialization',
+      title: 'Domain-specific training data.',
+      body: 'Each dataset is built for the target use case.',
+      label: 'Domains',
+      items: ['Biology', 'Chemistry', 'Physics', 'Materials', 'Medicine', 'Robotics'],
+    },
+    {
+      kind: 'diagram',
+      kicker: 'Reliability Signals',
+      title: 'Verified training data.',
+      body: 'We check and refine client data before model training.',
+      label: '',
+      items: ['Provenance', 'Review', 'Fit', 'Consistency'],
+    },
+    {
+      kind: 'delivery',
+      kicker: 'Release Controls',
+      title: 'Controlled model handoff.',
+      body: 'Signed artifacts, change logs, and role-based access.',
+      label: '',
+      items: ['Version History', 'Change Log', 'Access Control', 'API Handoff'],
+    },
+  ] as const;
+  const activeDataPanel = dataPanels[dataPanel];
 
 
 
@@ -250,11 +289,7 @@ export function HeroSection() {
                     setAccessKey(event.target.value);
                     if (accessState !== 'idle') setAccessState('idle');
                     setBriefingLines([]);
-                    setShowHint(false);
-                    setHintPhase('idle');
-                    setTypedLines([]);
-                    setHintTimes([]);
-                    setTraceLines([]);
+                    hideHintTrace();
                   }}
                   disabled={accessState === 'granted' || accessState === 'verifying'}
                   autoComplete="off"
@@ -333,7 +368,7 @@ export function HeroSection() {
                     type="button"
                     onClick={() => {
                       if (showHint) {
-                        setShowHint(false);
+                        hideHintTrace();
                         return;
                       }
                       runTrace();
@@ -345,7 +380,7 @@ export function HeroSection() {
                 </div>
 
                 {showHint && (
-                  <div className="mt-3 rounded-xl border border-white/10 bg-[#0D0F12] text-white/70 px-4 py-3 font-mono text-[12px] sm:text-[11px] leading-relaxed relative overflow-hidden">
+                  <div className="mt-3 rounded-xl border border-white/10 bg-[#0F1116] text-white/65 px-4 py-3 font-mono text-[11px] sm:text-[12px] leading-[1.45] relative overflow-hidden">
                     <div
                       className="absolute inset-0 opacity-20"
                       style={{
@@ -356,8 +391,16 @@ export function HeroSection() {
                     {/* Scanline removed */}
                     <div className="relative min-h-[120px] space-y-2">
                       <div className="agent-header">
-                        <div className="agent-title">agentd@{serverNameRef.current}</div>
-                        <div className="agent-meta">/var/log/agentd · session {sessionIdRef.current}</div>
+                        <div className="agent-title">
+                          <img
+                            src="/favicon.png"
+                            alt=""
+                            aria-hidden="true"
+                            className="agent-mark"
+                          />
+                          <span>auxerta.agent@{serverName}</span>
+                        </div>
+                        <div className="agent-meta">/var/log/auxerta-agent · session {sessionId}</div>
                       </div>
                       {hintPhase === 'loading' && (
                         <div className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-[0.2em]">
@@ -373,7 +416,7 @@ export function HeroSection() {
                               className={`agent-line${traceLines[index]?.level === 'ERROR' ? ' agent-error' : ''}`}
                             >
                               <span className="agent-time">{hintTimes[index] ?? '--:--:--'}</span>
-                              <span className="agent-prefix">agentd[{agentPidRef.current}]</span>
+                              <span className="agent-prefix">auxerta-agent[{agentPid}]</span>
                               <span className={`agent-level agent-level-${(traceLines[index]?.level ?? 'INFO').toLowerCase()}`}>
                                 {traceLines[index]?.level ?? 'INFO'}
                               </span>
@@ -433,22 +476,65 @@ export function HeroSection() {
                         }
                       }
                       .agent-header {
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
+                        display: grid;
+                        grid-template-columns: minmax(0, 1fr);
+                        row-gap: 4px;
                         font-size: 10px;
                         text-transform: uppercase;
-                        letter-spacing: 0.2em;
+                        letter-spacing: 0.12em;
                         color: rgba(148, 163, 184, 0.7);
                         padding-bottom: 6px;
                         border-bottom: 1px solid rgba(148, 163, 184, 0.2);
                       }
+                      @media (min-width: 700px) {
+                        .agent-header {
+                          grid-template-columns: minmax(0, 1fr) auto;
+                          column-gap: 12px;
+                          align-items: center;
+                        }
+                      }
                       .agent-title {
                         font-weight: 600;
                         color: rgba(226, 232, 240, 0.7);
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        min-width: 0;
+                      }
+                      .agent-title span {
+                        min-width: 0;
+                        display: block;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      }
+                      .agent-mark {
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 4px;
+                        opacity: 0.92;
                       }
                       .agent-meta {
                         color: rgba(148, 163, 184, 0.7);
+                        min-width: 0;
+                        overflow-wrap: anywhere;
+                        line-height: 1.25;
+                      }
+                      @media (min-width: 700px) {
+                        .agent-meta {
+                          justify-self: end;
+                          text-align: right;
+                        }
+                      }
+                      @media (max-width: 699px) {
+                        .agent-title span {
+                          white-space: normal;
+                          text-overflow: clip;
+                        }
+                        .agent-meta {
+                          font-size: 9px;
+                          letter-spacing: 0.08em;
+                        }
                       }
                       .agent-time {
                         color: rgba(148, 163, 184, 0.5);
@@ -631,36 +717,131 @@ export function HeroSection() {
             </div>
 
             {/* Domain Data Card */}
-            <div className="rounded-2xl border border-auxerta-text/10 bg-white/80 p-5 sm:p-6 shadow-sm backdrop-blur-sm">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <span className="micro-text text-auxerta-muted">Data Specialization</span>
-                  <h3 className="mt-2 text-lg sm:text-xl font-display font-semibold text-auxerta-text">
-                    Specialized data for reliable models.
-                  </h3>
-                  <p className="mt-2 text-sm text-auxerta-muted max-w-lg">
-                    We bring domain expertise tailored to each project.
-                  </p>
-                </div>
-                <div className="hidden sm:flex shrink-0 items-center gap-1.5">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-auxerta-accent/70" />
-                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-auxerta-text/15" />
-                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-auxerta-text/10" />
-                </div>
-              </div>
+	            <div
+                className="rounded-2xl border border-auxerta-text/10 bg-white/80 p-5 sm:p-6 shadow-sm backdrop-blur-sm"
+                onTouchStart={(event) => {
+                  const touch = event.touches?.[0];
+                  if (!touch) return;
+                  dataSwipeStartRef.current = { x: touch.clientX, y: touch.clientY };
+                }}
+                onTouchEnd={(event) => {
+                  const start = dataSwipeStartRef.current;
+                  dataSwipeStartRef.current = null;
+                  const touch = event.changedTouches?.[0];
+                  if (!start || !touch) return;
 
-              <div className="mt-5">
-                <div className="micro-text text-auxerta-muted mb-2">Domains</div>
-                <div className="flex flex-wrap gap-2">
-                  {['Biology', 'Chemistry', 'Physics', 'Materials', 'Medicine', 'Robotics'].map((domain) => (
-                    <span
-                      key={domain}
-                      className="inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
-                    >
-                      {domain}
-                    </span>
-                  ))}
-                </div>
+                  const dx = touch.clientX - start.x;
+                  const dy = touch.clientY - start.y;
+                  const absDx = Math.abs(dx);
+                  const absDy = Math.abs(dy);
+
+                  // Avoid hijacking vertical scroll. Only treat as swipe when clearly horizontal.
+                  if (absDx < 44 || absDx < absDy * 1.2) return;
+                  cycleDataPanel(dx < 0 ? 1 : -1);
+                }}
+              >
+	              <div className="flex items-start justify-between gap-4">
+	                <div>
+	                  <span className="micro-text text-auxerta-muted">{activeDataPanel.kicker}</span>
+	                  <h3 className="mt-2 text-lg sm:text-xl font-display font-semibold text-auxerta-text">
+	                    {activeDataPanel.title}
+	                  </h3>
+	                  <p className="mt-2 text-sm text-auxerta-muted max-w-lg">
+	                    {activeDataPanel.body}
+	                  </p>
+	                </div>
+	                <div className="shrink-0 flex items-center gap-1" role="tablist" aria-label="Data card panels">
+	                  {dataPanels.map((panel, index) => {
+	                    const isActive = dataPanel === index;
+	                    return (
+	                      <button
+	                        key={panel.kicker}
+	                        type="button"
+	                        role="tab"
+	                        aria-controls="data-panel-content"
+	                        aria-selected={isActive}
+	                        aria-label={panel.kicker}
+	                        onClick={() => setDataPanel(index as 0 | 1 | 2)}
+	                        className={`group inline-flex items-center justify-center rounded-full p-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-auxerta-accent/40 ${isActive ? 'bg-auxerta-accent/10' : 'hover:bg-auxerta-text/5'
+	                          }`}
+	                      >
+	                        <span
+	                          className={`h-2 w-2 rounded-full transition-all ${isActive
+	                            ? 'bg-auxerta-accent/85 shadow-[0_0_0_4px_rgba(196,165,224,0.14)]'
+	                            : 'bg-auxerta-text/15 group-hover:bg-auxerta-text/25'
+	                            }`}
+	                        />
+	                      </button>
+	                    );
+	                  })}
+	                </div>
+	              </div>
+
+              <div
+                id="data-panel-content"
+                role="tabpanel"
+                key={activeDataPanel.kicker}
+                className="mt-5 data-panel-anim"
+              >
+                {activeDataPanel.label && (
+                  <div className="micro-text text-auxerta-muted mb-2">{activeDataPanel.label}</div>
+                )}
+                {activeDataPanel.kind === 'diagram' ? (
+                  <ReliabilitySignalsDiagram />
+                ) : activeDataPanel.kind === 'delivery' ? (
+                  <div className="space-y-3">
+                    <PrivateDeliveryMailAnimation />
+                    <div className="flex flex-wrap gap-2">
+                      {activeDataPanel.items.map((item) => (
+                        <span
+                          key={item}
+                          className="inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {activeDataPanel.items.map((item) => (
+                        <span
+                          key={item}
+                          className="inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                    {dataPanel === 0 && (
+                      <div className="space-y-2.5">
+                        <div className="rounded-xl border border-auxerta-text/10 bg-white/70 px-3 py-2.5">
+                          <div className="micro-text text-auxerta-muted">Verticals</div>
+                          <div className="mt-2">
+                            <VerticalsNodeGraph />
+                          </div>
+                        </div>
+                        <div className="rounded-xl border border-auxerta-text/10 bg-white/70 px-3 py-2.5">
+                          <div className="micro-text text-auxerta-muted">Expertise Profile</div>
+                          <p className="mt-1 text-xs text-auxerta-muted">
+                            Contributors are Master&apos;s or PhD trained with certification and credentials, or have equivalent relevant domain experience.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <style>{`
+                  @keyframes data-panel-in {
+                    from { opacity: 0; transform: translateY(6px); }
+                    to { opacity: 1; transform: translateY(0); }
+                  }
+                  .data-panel-anim { animation: data-panel-in 260ms ease-out both; }
+                  @media (prefers-reduced-motion: reduce) {
+                    .data-panel-anim { animation: none !important; }
+                  }
+                `}</style>
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-auxerta-text/10 pt-4">
