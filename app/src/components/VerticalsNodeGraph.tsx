@@ -104,6 +104,15 @@ export function VerticalsNodeGraph() {
         .sv-term-wrap {
           position: relative;
           overflow: hidden;
+          box-shadow: 0 18px 46px rgba(2, 6, 23, 0.42), 0 0 0 1px rgba(52, 211, 153, 0.08) inset;
+        }
+        .sv-term-wrap::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: radial-gradient(120% 60% at 50% -20%, rgba(16, 185, 129, 0.18), transparent 55%);
+          opacity: 0.75;
         }
         .sv-term-head {
           display: flex;
@@ -141,7 +150,7 @@ export function VerticalsNodeGraph() {
           color: rgba(148,163,184,0.75);
         }
         .sv-term-text {
-          color: rgba(186,230,253,0.92);
+          color: rgba(167, 243, 208, 0.86);
           overflow: hidden;
           text-overflow: ellipsis;
         }
@@ -160,7 +169,8 @@ export function VerticalsNodeGraph() {
           width: 8px;
           height: 12px;
           border-radius: 2px;
-          background: rgba(56,189,248,0.9);
+          background: rgba(16,185,129,0.92);
+          box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
           animation: sv-cursor 1s steps(2, end) infinite;
         }
         @keyframes sv-cursor {

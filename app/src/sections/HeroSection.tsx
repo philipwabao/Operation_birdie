@@ -5,16 +5,20 @@ import { AnimatedBirds } from '../components/AnimatedBirds';
 import { ReliabilitySignalsDiagram } from '../components/ReliabilitySignalsDiagram';
 import { PrivateDeliveryMailAnimation } from '../components/PrivateDeliveryMailAnimation';
 import { VerticalsNodeGraph } from '../components/VerticalsNodeGraph';
+import { AmbientBackground } from '../components/AmbientBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
   const dataSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
   const serverName = 'srv-aux01';
   const [sessionId] = useState(() => Math.random().toString(16).slice(2, 6).toUpperCase());
   const [agentPid] = useState(() => Math.floor(4200 + Math.random() * 2600));
+  const [isVisible, setIsVisible] = useState(false);
+  const [isContactVisible, setIsContactVisible] = useState(false);
   const [accessKey, setAccessKey] = useState('');
   const [accessState, setAccessState] = useState<'idle' | 'verifying' | 'granted' | 'denied' | 'unavailable' | 'rate_limited'>('idle');
   const [briefingLines, setBriefingLines] = useState<string[]>([]);
@@ -23,10 +27,35 @@ export function HeroSection() {
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const [hintTimes, setHintTimes] = useState<string[]>([]);
   const [traceLines, setTraceLines] = useState<{ text: string; level: string }[]>([]);
+  const demoTabs = ['Model Specs', 'Benchmarks', 'API Example'] as const;
+  const [activeDemoTab, setActiveDemoTab] = useState<(typeof demoTabs)[number]>('Model Specs');
+  const activeDemoTabIndex = demoTabs.indexOf(activeDemoTab);
   const [dataPanel, setDataPanel] = useState<0 | 1 | 2>(0);
   const cycleDataPanel = (delta: -1 | 1) => {
     setDataPanel((prev) => (((prev + delta + 3) % 3) as 0 | 1 | 2));
   };
+
+  useEffect(() => {
+    const raf = window.requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+    return () => window.cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    const target = contactRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsContactVisible(true);
+        observer.disconnect();
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   const createHintTimes = (count: number) => {
     const randomBetween = (min: number, max: number) =>
@@ -225,10 +254,11 @@ export function HeroSection() {
       className="min-h-screen bg-gradient-to-b from-auxerta-offwhite via-white to-auxerta-offwhite flex flex-col items-center justify-center pt-28 pb-24 px-4 md:px-[8vw] relative overflow-hidden"
     >
       {/* Ambient Background */}
+      <AmbientBackground />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 -right-20 h-80 w-80 rounded-full bg-auxerta-accent/10 blur-3xl" />
-        <div className="absolute top-1/3 -left-24 h-96 w-96 rounded-full bg-auxerta-accent-glow/15 blur-3xl" />
-        <div className="absolute bottom-[-120px] right-1/4 h-72 w-72 rounded-full bg-auxerta-text/5 blur-3xl" />
+        <div className="absolute top-1/3 -left-24 h-96 w-96 rounded-full bg-auxerta-accent-glow/12 blur-3xl" />
+        <div className="absolute bottom-[-120px] right-1/4 h-72 w-72 rounded-full bg-auxerta-text/4 blur-3xl" />
       </div>
 
 
@@ -269,7 +299,16 @@ export function HeroSection() {
             <div id="services" className="scroll-mt-28" />
             <div
               id="private-preview"
-              className="scroll-mt-28 rounded-2xl border border-auxerta-text/10 bg-white/70 p-[14px] shadow-sm backdrop-blur-sm space-y-3"
+              data-reveal
+              className={`scroll-mt-28 interactive-card rounded-2xl border border-auxerta-text/10 bg-white/70 p-[14px] shadow-sm backdrop-blur-sm space-y-3 transition-all duration-700 ${
+                isVisible ? 'opacity-100 anim-fade-in-up' : 'opacity-0 translate-y-10'
+              }`}
+              style={{
+                transitionDuration: '800ms',
+                transitionTimingFunction: 'var(--ease-out-expo)',
+                transitionDelay: '400ms',
+                animationDelay: isVisible ? '400ms' : undefined,
+              }}
             >
               <div className="flex items-center justify-between">
                 <span className="micro-text text-auxerta-muted">Private Preview</span>
@@ -278,7 +317,7 @@ export function HeroSection() {
                 </span>
               </div>
               <form
-                className="flex items-center gap-2 rounded-xl border border-auxerta-text/10 bg-white px-3 py-2"
+                className="interactive-card flex items-center gap-2 rounded-xl border border-auxerta-text/10 bg-white px-3 py-2"
                 onSubmit={handleAccessSubmit}
               >
                 <input
@@ -321,7 +360,7 @@ export function HeroSection() {
                 </p>
               )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                  <div className="rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-1.5">
+                  <div data-reveal className="interactive-card rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-1.5">
                     <div className="micro-text text-auxerta-muted">Status</div>
                     <div className="text-sm font-semibold text-auxerta-text">
                       {accessState === 'granted'
@@ -335,7 +374,7 @@ export function HeroSection() {
                               : 'Active'}
                     </div>
                   </div>
-                  <div className="rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-1.5">
+                  <div data-reveal className="interactive-card rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-1.5">
                     <div className="micro-text text-auxerta-muted">Channel</div>
                     <div className="text-sm font-semibold text-auxerta-text">
                       {accessState === 'granted'
@@ -346,7 +385,7 @@ export function HeroSection() {
                     </div>
                   </div>
                 </div>
-              <div className="rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-2.5">
+              <div data-reveal className="interactive-card rounded-xl border border-auxerta-text/10 bg-white/80 px-3 py-2.5">
                 <div className="micro-text text-auxerta-muted mb-2">Briefing</div>
                 {accessState === 'granted' && briefingLines.length > 0 ? (
                   <div className="space-y-1 text-xs font-mono text-auxerta-text/70">
@@ -380,7 +419,7 @@ export function HeroSection() {
                 </div>
 
                 {showHint && (
-                  <div className="mt-3 rounded-xl border border-white/10 bg-[#0F1116] text-white/65 px-4 py-3 font-mono text-[11px] sm:text-[12px] leading-[1.45] relative overflow-hidden">
+                  <div data-reveal className="interactive-card mt-3 rounded-xl border border-white/10 bg-[#0F1116] text-white/65 px-4 py-3 font-mono text-[11px] sm:text-[12px] leading-[1.45] relative overflow-hidden">
                     <div
                       className="absolute inset-0 opacity-20"
                       style={{
@@ -618,7 +657,19 @@ export function HeroSection() {
             <div className="h-px w-full bg-gradient-to-r from-transparent via-auxerta-text/15 to-transparent" />
 
             {/* Upcoming Models Cards */}
-            <div id="models" className="scroll-mt-28 rounded-2xl border border-auxerta-text/10 bg-white/70 p-4 sm:p-5 shadow-sm backdrop-blur-sm">
+            <div
+              id="models"
+              data-reveal
+              className={`scroll-mt-28 interactive-card rounded-2xl border border-auxerta-text/10 bg-white/70 p-4 sm:p-5 shadow-sm backdrop-blur-sm transition-all duration-700 ${
+                isVisible ? 'opacity-100 anim-fade-in-up' : 'opacity-0 translate-y-10'
+              }`}
+              style={{
+                transitionDuration: '800ms',
+                transitionTimingFunction: 'var(--ease-out-expo)',
+                transitionDelay: '560ms',
+                animationDelay: isVisible ? '560ms' : undefined,
+              }}
+            >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {[
                   { name: 'Neognathae Owl', status: 'Coming Soon' },
@@ -626,7 +677,18 @@ export function HeroSection() {
                   { name: 'Neognathae Pidgin', status: 'Coming Soon' },
                   { name: 'Neognathae Starling', status: 'Coming Soon' }
                 ].map((model, i) => (
-                  <div key={i} className="bg-white/90 border border-auxerta-text/10 rounded-xl p-3.5 sm:p-4 flex flex-col items-center justify-center text-center shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all">
+                  <div
+                    key={i}
+                    className={`shimmer-card interactive-card bg-white/90 border border-auxerta-text/10 rounded-xl p-3.5 sm:p-4 flex flex-col items-center justify-center text-center shadow-xs transition-all duration-700 ${
+                      isVisible ? 'opacity-100 anim-scale-in' : 'opacity-0 translate-y-6 scale-95'
+                    }`}
+                    style={{
+                      transitionDuration: '800ms',
+                      transitionTimingFunction: 'var(--ease-spring)',
+                      transitionDelay: `${600 + i * 100}ms`,
+                      animationDelay: isVisible ? `${600 + i * 100}ms` : undefined,
+                    }}
+                  >
                     <div className="text-xs font-mono font-bold text-auxerta-text mb-2">{model.name}</div>
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-auxerta-accent/10 text-auxerta-accent font-medium uppercase tracking-wide">
                       {model.status}
@@ -637,8 +699,8 @@ export function HeroSection() {
             </div>
 
             {/* NVIDIA Inception Badge */}
-            <div className="flex justify-start">
-              <div className="inline-flex items-center justify-center rounded-full border border-auxerta-text/10 bg-white/70 px-5 py-3 shadow-xs backdrop-blur-sm">
+              <div data-reveal className="flex justify-start">
+              <div className="interactive-card inline-flex items-center justify-center rounded-full border border-auxerta-text/10 bg-white/70 px-5 py-3 shadow-xs backdrop-blur-sm">
                 <img
                   src="/nvidia-inception-badge.png"
                   alt="NVIDIA Inception Program"
@@ -651,7 +713,18 @@ export function HeroSection() {
 
           {/* Chat Interface */}
           <div className="order-1 lg:order-2 space-y-6">
-            <div className="bg-white/95 rounded-2xl border border-auxerta-text/10 overflow-hidden shadow-card backdrop-blur-sm">
+            <div
+              data-reveal
+              className={`interactive-card bg-white/95 rounded-2xl border border-auxerta-text/10 overflow-hidden shadow-card backdrop-blur-sm transition-all duration-700 ${
+                isVisible ? 'opacity-100 anim-slide-in-right' : 'opacity-0 translate-x-12'
+              }`}
+              style={{
+                transitionDuration: '800ms',
+                transitionTimingFunction: 'var(--ease-out-expo)',
+                transitionDelay: '500ms',
+                animationDelay: isVisible ? '500ms' : undefined,
+              }}
+            >
               {/* Header */}
               <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-auxerta-text/10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -669,33 +742,63 @@ export function HeroSection() {
               {/* Chat Content - Demo Tabs */}
               <div className="p-4 sm:p-6">
                 {/* Tab Headers */}
-                <div className="flex gap-2 mb-4 border-b border-auxerta-text/10 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                  <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-auxerta-accent border-b-2 border-auxerta-accent flex-shrink-0">
-                    Model Specs
-                  </button>
-                  <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60 flex-shrink-0">
-                    Benchmarks
-                  </button>
-                  <button className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-auxerta-text/40 hover:text-auxerta-text/60 flex-shrink-0">
-                    API Example
-                  </button>
+                <div className="relative mb-4 border-b border-auxerta-text/10">
+                  <div className="grid grid-cols-3 gap-1">
+                    {demoTabs.map((tab) => (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => setActiveDemoTab(tab)}
+                        className={`tab-pill px-2 sm:px-3 py-2 text-[11px] sm:text-sm font-medium ${activeDemoTab === tab ? 'text-auxerta-accent-dark' : 'text-auxerta-text/45 hover:text-auxerta-text/70'
+                          }`}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                  <span
+                    className="tab-track"
+                    style={{ transform: `translate3d(${activeDemoTabIndex * 100}%, 0, 0)` }}
+                  />
                 </div>
 
-                {/* Model Specs Content */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-3 border-b border-auxerta-text/5">
-                    <span className="text-sm text-auxerta-muted">Context Window</span>
-                    <span className="text-base font-mono font-medium text-auxerta-accent">144K tokens</span>
+                {/* Tab Content */}
+                {activeDemoTab === 'Model Specs' && (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-3 border-b border-auxerta-text/5">
+                      <span className="text-sm text-auxerta-muted">Context Window</span>
+                      <span className="text-base font-mono font-medium text-auxerta-accent">144K tokens</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b border-auxerta-text/5">
+                      <span className="text-sm text-auxerta-muted">Reasoning Profile</span>
+                      <span className="text-xs px-2 py-1 rounded-sm bg-auxerta-accent/10 text-auxerta-accent-dark font-medium">Adaptive</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-sm text-auxerta-muted">Full Specifications</span>
+                      <span className="text-xs px-2 py-1 rounded-sm bg-auxerta-accent/10 text-auxerta-accent-dark font-medium">Coming Soon</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center py-3">
-                    <span className="text-sm text-auxerta-muted">Full Specifications</span>
-                    <span className="text-xs px-2 py-1 rounded-sm bg-auxerta-accent/10 text-auxerta-accent-dark font-medium">Coming Soon</span>
+                )}
+                {activeDemoTab === 'Benchmarks' && (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-sm text-auxerta-muted">Benchmarks</span>
+                      <span className="text-xs px-2 py-1 rounded-sm bg-auxerta-accent/10 text-auxerta-accent-dark font-medium">Coming Soon</span>
+                    </div>
                   </div>
-                </div>
+                )}
+                {activeDemoTab === 'API Example' && (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-sm text-auxerta-muted">API Example</span>
+                      <span className="text-xs px-2 py-1 rounded-sm bg-auxerta-accent/10 text-auxerta-accent-dark font-medium">Coming Soon</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Input Area */}
-              <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-auxerta-text/10 flex items-center justify-between bg-white/70">
+              <div className="interactive-card px-4 sm:px-6 py-3.5 sm:py-4 border-t border-auxerta-text/10 flex items-center justify-between bg-white/70">
                 <div className="flex items-center gap-4">
                   <button className="p-2 rounded-md text-auxerta-text/40 hover:text-auxerta-text/60 hover:bg-auxerta-text/5 transition-colors">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -708,7 +811,7 @@ export function HeroSection() {
                     </svg>
                   </button>
                 </div>
-                <button className="p-2 rounded-md text-auxerta-accent hover:text-auxerta-accent-dark hover:bg-auxerta-accent/10 transition-colors">
+                <button className="send-icon-btn p-2 rounded-md text-auxerta-accent hover:text-auxerta-accent-dark hover:bg-auxerta-accent/10 transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -718,7 +821,16 @@ export function HeroSection() {
 
             {/* Domain Data Card */}
 	            <div
-                className="rounded-2xl border border-auxerta-text/10 bg-white/80 p-5 sm:p-6 shadow-sm backdrop-blur-sm"
+                data-reveal
+                className={`interactive-card rounded-2xl border border-auxerta-text/10 bg-white/80 p-5 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-700 ${
+                  isVisible ? 'opacity-100 anim-fade-in-up' : 'opacity-0 translate-y-10'
+                }`}
+                style={{
+                  transitionDuration: '800ms',
+                  transitionTimingFunction: 'var(--ease-out-expo)',
+                  transitionDelay: '700ms',
+                  animationDelay: isVisible ? '700ms' : undefined,
+                }}
                 onTouchStart={(event) => {
                   const touch = event.touches?.[0];
                   if (!touch) return;
@@ -795,7 +907,7 @@ export function HeroSection() {
                       {activeDataPanel.items.map((item) => (
                         <span
                           key={item}
-                          className="inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
+                          className="domain-chip inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
                         >
                           {item}
                         </span>
@@ -808,7 +920,7 @@ export function HeroSection() {
                       {activeDataPanel.items.map((item) => (
                         <span
                           key={item}
-                          className="inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
+                          className="domain-chip inline-flex items-center rounded-full border border-auxerta-text/10 bg-white/70 px-3 py-1 text-xs font-medium text-auxerta-text/70"
                         >
                           {item}
                         </span>
@@ -816,13 +928,13 @@ export function HeroSection() {
                     </div>
                     {dataPanel === 0 && (
                       <div className="space-y-2.5">
-                        <div className="rounded-xl border border-auxerta-text/10 bg-white/70 px-3 py-2.5">
+                        <div data-reveal className="interactive-card rounded-xl border border-auxerta-text/10 bg-white/70 px-3 py-2.5">
                           <div className="micro-text text-auxerta-muted">Verticals</div>
                           <div className="mt-2">
                             <VerticalsNodeGraph />
                           </div>
                         </div>
-                        <div className="rounded-xl border border-auxerta-text/10 bg-white/70 px-3 py-2.5">
+                        <div data-reveal className="interactive-card rounded-xl border border-auxerta-text/10 bg-white/70 px-3 py-2.5">
                           <div className="micro-text text-auxerta-muted">Expertise Profile</div>
                           <p className="mt-1 text-xs text-auxerta-muted">
                             Contributors are Master&apos;s or PhD trained with certification and credentials, or have equivalent relevant domain experience.
@@ -844,7 +956,17 @@ export function HeroSection() {
                 `}</style>
               </div>
 
-              <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-auxerta-text/10 pt-4">
+              <div
+                ref={contactRef}
+                className={`mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-auxerta-text/10 pt-4 transition-all duration-700 ${
+                  isContactVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+                style={{
+                  transitionDuration: '800ms',
+                  transitionTimingFunction: 'var(--ease-out-expo)',
+                  transitionDelay: '120ms',
+                }}
+              >
                 <div>
                   <div className="text-sm font-medium text-auxerta-text">Want to learn more?</div>
                   <a

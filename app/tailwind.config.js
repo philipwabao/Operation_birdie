@@ -39,14 +39,14 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         auxerta: {
-          offwhite: "#F6F6F2",
+          offwhite: "#FAF9F7",
           dark: "#0B0B0C",
           text: "#121214",
           muted: "#6E6E73",
-          accent: "#C4A5E0",
-          "accent-dark": "#9B7BC7",
-          "accent-soft": "#E8D5F2",
-          "accent-glow": "#F5E6FA"
+          accent: "#A78BFA",
+          "accent-dark": "#8B5CF6",
+          "accent-soft": "#DDD6FE",
+          "accent-glow": "#F3F0FF"
         }
       },
       borderRadius: {
@@ -64,8 +64,8 @@ module.exports = {
         "card-dark": "0 30px 70px rgba(5, 8, 12, 0.45)",
       },
       fontFamily: {
-        display: ['Sora', 'sans-serif'],
-        sans: ['Source Sans 3', 'sans-serif'],
+        display: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       keyframes: {

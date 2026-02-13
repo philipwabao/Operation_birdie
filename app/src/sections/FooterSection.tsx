@@ -1,9 +1,5 @@
-import { useRef, useLayoutEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef, useState } from 'react';
 import { Twitter, Github, Linkedin } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const footerLinks = {
   platform: ['Research', 'Models', 'Relations'],
@@ -13,16 +9,21 @@ const footerLinks = {
 
 export function FooterSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-
-    const ctx = gsap.context(() => {
-      // Minimal animation
-    }, section);
-
-    return () => ctx.revert();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsVisible(true);
+        observer.disconnect();
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -35,21 +36,31 @@ export function FooterSection() {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Logo */}
-          <div>
+          <div
+            className={`transition-all duration-700 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDuration: '800ms', transitionTimingFunction: 'var(--ease-out-expo)', transitionDelay: '120ms' }}
+          >
             <a href="#" className="font-display font-bold text-2xl text-white tracking-tight mb-4 block">
               Auxerta
             </a>
           </div>
 
           {/* Platform */}
-          <div>
+          <div
+            className={`transition-all duration-700 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDuration: '800ms', transitionTimingFunction: 'var(--ease-out-expo)', transitionDelay: '220ms' }}
+          >
             <h4 className="micro-text text-white/40 mb-4">Platform</h4>
             <ul className="space-y-3">
               {footerLinks.platform.map((link) => (
                 <li key={link}>
                   <a
                     href="#"
-                    className="body-text text-white/70 hover:text-white transition-colors"
+                    className="body-text text-white/70 hover:text-white transition-colors footer-slide-link"
                   >
                     {link}
                   </a>
@@ -59,14 +70,19 @@ export function FooterSection() {
           </div>
 
           {/* Company */}
-          <div>
+          <div
+            className={`transition-all duration-700 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDuration: '800ms', transitionTimingFunction: 'var(--ease-out-expo)', transitionDelay: '320ms' }}
+          >
             <h4 className="micro-text text-white/40 mb-4">Company</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link}>
                   <a
                     href="#"
-                    className="body-text text-white/70 hover:text-white transition-colors"
+                    className="body-text text-white/70 hover:text-white transition-colors footer-slide-link"
                   >
                     {link}
                   </a>
@@ -76,14 +92,19 @@ export function FooterSection() {
           </div>
 
           {/* Resources */}
-          <div>
+          <div
+            className={`transition-all duration-700 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDuration: '800ms', transitionTimingFunction: 'var(--ease-out-expo)', transitionDelay: '420ms' }}
+          >
             <h4 className="micro-text text-white/40 mb-4">Resources</h4>
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link}>
                   <a
                     href="#"
-                    className="body-text text-white/70 hover:text-white transition-colors"
+                    className="body-text text-white/70 hover:text-white transition-colors footer-slide-link"
                   >
                     {link}
                   </a>

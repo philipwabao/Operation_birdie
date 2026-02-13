@@ -30,17 +30,17 @@ export function Navigation() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${scrolled
-        ? 'bg-auxerta-offwhite/80 backdrop-blur-md py-3 border-b border-auxerta-text/10 shadow-sm'
+        ? 'nav-glass py-3'
         : 'bg-transparent py-6'
         }`}
     >
       <div className="mx-auto flex items-center justify-between px-6 md:px-10 max-w-6xl">
         {/* Left Nav Links */}
         <div className="hidden md:flex items-center gap-8 flex-1">
-          <a href="#services" onClick={scrollToId('services')} className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+          <a href="#services" onClick={scrollToId('services')} className="nav-link text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors">
             Research
           </a>
-          <a href="#models" onClick={scrollToId('models')} className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+          <a href="#models" onClick={scrollToId('models')} className="nav-link text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors">
             Models
           </a>
         </div>
@@ -62,7 +62,7 @@ export function Navigation() {
               <div
                 className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 rounded-tl-sm transition-all duration-300 group-hover:w-full group-hover:h-full group-hover:opacity-100"
                 style={{
-                  animation: 'border-gradient-to-purple 2s ease-out forwards',
+                  animation: 'border-gradient-to-purple 1.6s ease-out forwards',
                   opacity: 0.8
                 }}
               />
@@ -71,7 +71,7 @@ export function Navigation() {
               <div
                 className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 rounded-br-sm transition-all duration-300 group-hover:w-full group-hover:h-full group-hover:opacity-100 group-hover:border-auxerta-text"
                 style={{
-                  animation: 'border-gradient-to-purple 2s ease-out forwards 0.2s', // slight delay
+                  animation: 'border-gradient-to-purple 1.6s ease-out forwards 0.2s',
                   opacity: 0.8
                 }}
               />
@@ -86,7 +86,7 @@ export function Navigation() {
 
               {/* Subtle Glow Backdrop */}
               <div
-                className="absolute inset-0 bg-gradient-to-r from-auxerta-accent/10 to-auxerta-accent-glow/10 blur-md rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute inset-0 bg-gradient-to-r from-auxerta-accent/12 to-auxerta-accent-glow/12 blur-md rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               />
 
             </div>
@@ -105,10 +105,10 @@ export function Navigation() {
         {/* Right Nav Links + Actions */}
         <div className="flex items-center gap-8 flex-1 justify-end">
           <div className="hidden md:flex items-center gap-8">
-            <a href="#about" onClick={scrollToId('about')} className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+            <a href="#about" onClick={scrollToId('about')} className="nav-link text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors">
               About
             </a>
-            <a href="mailto:invest@auxerta.com" className="text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors link-underline">
+            <a href="mailto:invest@auxerta.com" className="nav-link text-sm text-auxerta-text/80 hover:text-auxerta-text transition-colors">
               Invest
             </a>
           </div>
@@ -125,6 +125,27 @@ export function Navigation() {
           </div>
         </div>
       </div>
+      <style>{`
+        .nav-link {
+          position: relative;
+          transition: color 220ms ease;
+        }
+        .nav-link::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -6px;
+          height: 2px;
+          width: 100%;
+          transform: scaleX(0);
+          transform-origin: left center;
+          background: linear-gradient(90deg, rgba(167, 139, 250, 0.9), rgba(139, 92, 246, 0.9));
+          transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .nav-link:hover::before {
+          transform: scaleX(1);
+        }
+      `}</style>
     </nav>
   );
 }
