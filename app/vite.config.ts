@@ -12,6 +12,14 @@ export default defineConfig(() => {
   return {
     base: './',
     plugins,
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          blogPostValidation: path.resolve(__dirname, 'blog/how-we-validate-domain-data-before-model-training/index.html'),
+        },
+      },
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

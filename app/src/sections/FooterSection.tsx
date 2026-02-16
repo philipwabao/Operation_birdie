@@ -103,7 +103,7 @@ export function FooterSection() {
               {footerLinks.resources.map((link) => (
                 <li key={link}>
                   <a
-                    href="#"
+                    href={link === 'Blog' ? './blog/how-we-validate-domain-data-before-model-training/' : '#'}
                     className="body-text text-white/70 hover:text-white transition-colors footer-slide-link"
                   >
                     {link}
@@ -139,7 +139,10 @@ export function FooterSection() {
               <Github className="w-5 h-5" />
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com/company/auxerta/"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Auxerta LinkedIn"
               className="p-2 rounded-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
             >
               <Linkedin className="w-5 h-5" />
