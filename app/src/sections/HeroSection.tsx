@@ -157,18 +157,25 @@ export function HeroSection() {
                     {openRoleTitles.length} Roles
                   </span>
                 </div>
-                <div className="min-h-0 flex-1 rounded-xl border border-auxerta-text/10 bg-white/80 p-3 sm:p-3.5 flex flex-col">
-                  <div className="min-h-0 flex-1 overflow-y-auto pr-1 space-y-1.5">
-                    {openRoleTitles.map((title) => (
+                <div className="relative min-h-0 flex-1 rounded-xl border border-auxerta-text/10 bg-gradient-to-b from-white/95 to-auxerta-offwhite/70 p-2.5 sm:p-3 flex flex-col overflow-hidden">
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-auxerta-accent/10 to-transparent" />
+                  <div className="relative micro-text text-auxerta-muted mb-1.5">Open Roles</div>
+                  <div className="relative min-h-0 flex-1 overflow-y-auto pr-1 space-y-1.5">
+                    {openRoleTitles.map((title, index) => (
                       <div
                         key={title}
-                        className="rounded-lg border border-auxerta-text/10 bg-white/90 px-2.5 py-2 text-xs sm:text-sm font-medium text-auxerta-text/85"
+                        className="group flex items-center gap-2 rounded-lg border border-auxerta-text/10 bg-white/90 px-2.5 py-2 transition-colors hover:border-auxerta-accent/25 hover:bg-white"
                       >
-                        {title}
+                        <span className="text-[10px] font-semibold tracking-[0.12em] text-auxerta-muted/90 tabular-nums">
+                          {(index + 1).toString().padStart(2, '0')}
+                        </span>
+                        <span className="text-xs sm:text-[13px] font-medium leading-tight text-auxerta-text/85">
+                          {title}
+                        </span>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-2 pt-2 border-t border-auxerta-text/10">
+                  <div className="relative mt-2 rounded-lg border border-auxerta-text/10 bg-auxerta-accent/5 px-2.5 py-2">
                     <p className="text-[11px] sm:text-xs leading-relaxed text-auxerta-text/75">
                       We are currently updating the job board.
                     </p>
@@ -201,28 +208,40 @@ export function HeroSection() {
             >
               <div className="pointer-events-none absolute inset-0">
                 <div
-                  className="absolute -top-8 -right-8 h-28 w-28 rounded-full bg-auxerta-accent/16 blur-2xl"
+                  className="absolute -top-8 -right-8 h-28 w-28 rounded-full bg-auxerta-accent/14 blur-2xl"
                   style={{ animation: 'blog-blob-float-a 8.4s ease-in-out infinite' }}
                 />
                 <div
-                  className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-auxerta-accent-glow/14 blur-2xl"
+                  className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-auxerta-accent-glow/12 blur-2xl"
                   style={{ animation: 'blog-blob-float-b 10.2s ease-in-out infinite' }}
                 />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(167,139,250,0.12),transparent_45%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_10%,rgba(167,139,250,0.1),transparent_45%)]" />
+                <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-auxerta-accent/8 to-transparent" />
               </div>
-              <div className="relative flex items-center">
+              <div className="relative flex items-center justify-between">
                 <span className="micro-text text-auxerta-muted">Blog</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-auxerta-accent/10 text-auxerta-accent font-medium uppercase tracking-wide">
+                  Latest
+                </span>
               </div>
               <a
                 href="./blog/how-we-validate-domain-data-before-model-training/"
-                className="group relative mt-3 block overflow-hidden rounded-xl border border-auxerta-text/10 bg-white/85 px-3 py-2.5 text-xs sm:text-sm text-auxerta-text/85 hover:border-auxerta-accent/25 hover:bg-white transition-colors"
+                className="group relative mt-3 block overflow-hidden rounded-xl border border-auxerta-text/10 bg-gradient-to-b from-white/95 to-auxerta-offwhite/75 px-3 py-3 sm:py-3.5 transition-colors hover:border-auxerta-accent/25 hover:from-white hover:to-white"
               >
                 <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                   <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0),rgba(167,139,250,0.14),rgba(56,189,248,0.1),rgba(255,255,255,0))] translate-x-[-38%] transition-transform duration-700 group-hover:translate-x-[22%]" />
                 </div>
-                <span className="relative">How We Validate Domain Data Before Model Training</span>
+                <div className="relative flex items-start gap-2.5">
+                  <span className="mt-0.5 h-7 w-1.5 rounded-full bg-gradient-to-b from-auxerta-accent/50 to-auxerta-accent-glow/45" />
+                  <div className="min-w-0">
+                    <p className="text-[11px] sm:text-xs text-auxerta-muted mb-1">Data Ops · January 2026 · 5 min read</p>
+                    <p className="text-xs sm:text-sm font-medium leading-snug text-auxerta-text/90">
+                      How We Validate Domain Data Before Model Training
+                    </p>
+                  </div>
+                </div>
               </a>
-              <div className="relative mt-3 pt-3 border-t border-auxerta-text/10 flex items-center justify-center">
+              <div className="relative mt-3 pt-3 border-t border-auxerta-text/10 flex items-center justify-center rounded-lg bg-white/45">
                 <img
                   src="/nvidia-inception-badge.png"
                   alt="NVIDIA Inception Program"
